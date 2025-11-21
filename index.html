@@ -17,7 +17,8 @@
 
     <style>
         :root {
-            --color-lime: #DFFF00;
+            /* UPDATED: Main Accent Color (Muted Blush) */
+            --color-accent: #E5CFCF; 
             --color-black: #0a0a0a;
             --color-white: #ffffff;
             --color-offwhite: #f4f4f4;
@@ -56,7 +57,8 @@
             left: 0;
             width: 100%;
             height: 100vh;
-            background-color: #e8e6e1; 
+            /* Slightly warmed up grey to match the blush */
+            background-color: #EBE6E6; 
             z-index: 9999;
             display: flex;
             justify-content: center;
@@ -182,7 +184,7 @@
 
         /* --- INTRO SECTION --- */
         .section-intro {
-            background-color: var(--color-lime);
+            background-color: var(--color-accent); /* Using new Blush */
             color: var(--color-black);
             min-height: 150vh;
             padding: 0;
@@ -233,7 +235,7 @@
         /* --- VENUE SECTION --- */
         .section-venue {
             background-color: var(--color-black);
-            color: var(--color-lime);
+            color: var(--color-accent); /* Using new Blush text on black */
             min-height: 150vh;
             padding: 0;
             display: flex;
@@ -297,14 +299,14 @@
 
         /* --- RSVP Section --- */
         .section-rsvp {
-            background-color: var(--color-lime);
+            background-color: var(--color-accent); /* Using new Blush */
             color: var(--color-black);
-            min-height: 100vh; /* Full height for form */
+            min-height: 100vh; 
             padding: 6rem 2rem;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start; /* Align top so form has space */
+            justify-content: flex-start;
             clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
             margin-bottom: 20vh;
             position: relative;
@@ -349,7 +351,7 @@
             border-bottom: 1px solid rgba(0,0,0,0.3);
             padding: 0.5rem 0;
             font-family: var(--font-serif);
-            font-size: 1.5rem; /* Large, legible text */
+            font-size: 1.5rem; 
             color: var(--color-black);
             outline: none;
             border-radius: 0;
@@ -422,12 +424,12 @@
             letter-spacing: 0.1em;
             cursor: pointer;
             transition: all 0.4s ease;
-            align-self: center; /* Center button */
+            align-self: center; 
         }
 
         .btn-submit:hover {
             background: var(--color-black);
-            color: var(--color-lime);
+            color: var(--color-accent);
         }
 
         /* Footer reveal */
@@ -557,7 +559,7 @@
             </div>
         </section>
 
-        <!-- INTRO (LIME) -->
+        <!-- INTRO (BLUSH) -->
         <section class="section-intro">
             <div class="intro-content-layer">
                 <h2 class="editorial-text split-reveal" style="text-align: center;">
@@ -578,7 +580,7 @@
         <!-- VENUE (BLACK) -->
         <section class="section-venue">
             <div class="venue-content-layer">
-                <div class="meta-text fade-reveal" style="color: var(--color-lime);">The Location</div>
+                <div class="meta-text fade-reveal" style="color: var(--color-accent);">The Location</div>
                 <h2 class="display-text split-reveal">The Public<br>Library</h2>
                 <div class="venue-details">
                     <div class="detail-block fade-reveal">
@@ -604,7 +606,7 @@
             </div>
         </section>
 
-        <!-- RSVP (LIME) -->
+        <!-- RSVP (BLUSH) -->
         <section class="section-rsvp">
             <h2 class="editorial-text split-reveal" style="text-align: center;">Be Part of Our Story</h2>
             
