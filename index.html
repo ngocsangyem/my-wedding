@@ -49,6 +49,46 @@
             -webkit-font-smoothing: antialiased;
         }
 
+        /* --- LOADER OVERLAY --- */
+        .loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background-color: #e8e6e1; /* Warm off-white/grey from video */
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            visibility: visible; 
+        }
+
+        .loader-stack {
+            position: relative;
+            width: 280px;
+            height: 350px;
+            /* Perspective is crucial for the 3D drop effect */
+            perspective: 1200px; 
+        }
+
+        .loader-card {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* The Polaroid Look */
+            border: 12px solid white;
+            border-bottom: 30px solid white; /* Even thicker bottom for authentic look */
+            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+            transform-origin: center center;
+            will-change: transform, opacity;
+            /* IMPORTANT: Start invisible for GSAP to handle entrance */
+            opacity: 0; 
+        }
+
         /* --- 1. FIXED BACKGROUND LAYER --- */
         .bg-layer {
             position: fixed;
@@ -143,11 +183,11 @@
             align-items: flex-end;
         }
 
-        /* --- INTRO SECTION (UPDATED TO SCATTERED GRID) --- */
+        /* --- INTRO SECTION --- */
         .section-intro {
             background-color: var(--color-lime);
             color: var(--color-black);
-            min-height: 150vh; /* Taller for scroll interaction */
+            min-height: 150vh;
             padding: 0;
             display: flex;
             justify-content: center;
@@ -170,14 +210,13 @@
             padding: 2rem;
         }
 
-        /* Intro Collage Styles */
         .intro-gallery {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 1; /* Behind text */
+            z-index: 1; 
             pointer-events: none;
         }
 
@@ -185,12 +224,10 @@
             position: absolute;
             object-fit: cover;
             border-radius: 4px;
-            transition: transform 0.1s linear; /* For smooth GSAP */
-            /* Intro images are colored by default, maybe slight fade */
+            transition: transform 0.1s linear; 
             opacity: 0.9; 
         }
 
-        /* Intro Image Positions (Desktop) */
         .i-img-1 { top: 15%; left: 8%; width: 18vw; height: 24vw; z-index: 2; }
         .i-img-2 { bottom: 20%; left: 5%; width: 15vw; height: 15vw; z-index: 1; }
         .i-img-3 { top: 10%; right: 5%; width: 22vw; height: 16vw; z-index: 1; }
@@ -235,7 +272,6 @@
             gap: 0.5rem;
         }
 
-        /* Venue Collage Styles */
         .venue-gallery {
             position: absolute;
             top: 0;
@@ -256,7 +292,6 @@
 
         .venue-img:hover { filter: grayscale(0%); }
 
-        /* Venue Image Positions */
         .v-img-1 { top: 10%; left: 5%; width: 20vw; height: 25vw; z-index: 2; }
         .v-img-2 { top: 15%; right: 8%; width: 18vw; height: 12vw; z-index: 1; }
         .v-img-3 { bottom: 10%; left: 12%; width: 15vw; height: 15vw; z-index: 2; }
@@ -337,7 +372,6 @@
             .num-item { font-size: 2rem; }
             .count-label { font-size: 0.6rem; letter-spacing: 0.1em; }
 
-            /* SHARED MOBILE LAYOUT FOR INTRO & VENUE */
             .section-intro, .section-venue {
                 min-height: auto;
                 padding: 4rem 1.5rem;
@@ -352,7 +386,6 @@
                 padding: 0;
             }
 
-            /* Grid for mobile images */
             .intro-gallery, .venue-gallery {
                 position: relative;
                 height: auto;
@@ -373,16 +406,31 @@
                 opacity: 1 !important;
             }
 
-            /* Vary grid layout slightly */
             .i-img-3, .v-img-3 { grid-column: span 2; height: 250px; }
             
             .venue-details { flex-direction: column; gap: 2rem; }
+            
+            /* Mobile Loader Adjustments */
+            .loader-stack { width: 220px; height: 280px; }
         }
     </style>
 </head>
 <body>
 
     <div class="noise-overlay"></div>
+
+    <!-- NEW: LOADING OVERLAY -->
+    <div class="loader-overlay">
+        <div class="loader-stack">
+            <!-- Polaroid Style Images (Opacity 0 handled in CSS for GSAP entrance) -->
+            <img src="https://images.unsplash.com/photo-1523438885200-e635ba2c371e?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&q=80&w=1000" class="loader-card" alt="Loader 1">
+            <img src="https://images.unsplash.com/photo-1502635385003-ee1e6a1a742d?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&q=80&w=1000" class="loader-card" alt="Loader 2">
+            <img src="https://plus.unsplash.com/premium_photo-1675851210020-045950ac0215?q=80&w=973&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&q=80&w=1000" class="loader-card" alt="Loader 3">
+            <img src="https://plus.unsplash.com/premium_photo-1673897888993-a1db844c2ca1?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&q=80&w=1000" class="loader-card" alt="Loader 4">
+            <!-- Topmost image -->
+            <img src="https://images.unsplash.com/photo-1550784718-990c6de52adf?q=80&w=984&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&q=80&w=1000" class="loader-card" alt="Loader 5">
+        </div>
+    </div>
 
     <!-- 1. Fixed Background Slideshow -->
     <div class="bg-layer" id="bg-layer">
@@ -408,10 +456,8 @@
             </div>
         </section>
 
-        <!-- INTRO (LIME) - SCATTERED LAYOUT -->
+        <!-- INTRO (LIME) -->
         <section class="section-intro">
-            
-            <!-- Central Text -->
             <div class="intro-content-layer">
                 <h2 class="editorial-text split-reveal" style="text-align: center;">
                     "We loved with a love that was more than love."
@@ -420,29 +466,19 @@
                     Join us for a weekend of celebration, art, and romance in the heart of the city. We cannot wait to share this chapter with our favorite people.
                 </p>
             </div>
-
-            <!-- Floating Images -->
             <div class="intro-gallery">
-                <!-- Left Tall -->
                 <img src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=2070&auto=format&fit=crop" class="intro-img-scatter i-img-1" alt="Couple 1">
-                <!-- Left Small -->
                 <img src="https://images.unsplash.com/photo-1621621667797-e06afc217fb0?q=80&w=1000&auto=format&fit=crop" class="intro-img-scatter i-img-2" alt="Hands">
-                <!-- Right Wide -->
                 <img src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2070&auto=format&fit=crop" class="intro-img-scatter i-img-3" alt="Atmosphere">
-                <!-- Right Tall -->
                 <img src="https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?q=80&w=1000&auto=format&fit=crop" class="intro-img-scatter i-img-4" alt="Flowers">
             </div>
-
         </section>
 
-        <!-- VENUE (BLACK) - SCATTERED LAYOUT -->
+        <!-- VENUE (BLACK) -->
         <section class="section-venue">
-            
-            <!-- Central Text Layer -->
             <div class="venue-content-layer">
                 <div class="meta-text fade-reveal" style="color: var(--color-lime);">The Location</div>
                 <h2 class="display-text split-reveal">The Public<br>Library</h2>
-                
                 <div class="venue-details">
                     <div class="detail-block fade-reveal">
                         <span class="meta-text" style="color: #999;">Ceremony</span>
@@ -458,16 +494,13 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Background Floating Gallery -->
             <div class="venue-gallery">
-                <img src="https://plus.unsplash.com/premium_photo-1675003662150-2569448d2b3b?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D?q=80&w=1000&auto=format&fit=crop" class="venue-img v-img-1" alt="Detail 1">
+                <img src="https://images.unsplash.com/photo-1519225421980-715cb0202128?q=80&w=1000&auto=format&fit=crop" class="venue-img v-img-1" alt="Detail 1">
                 <img src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?q=80&w=1000&auto=format&fit=crop" class="venue-img v-img-2" alt="Detail 2">
                 <img src="https://images.unsplash.com/photo-1550005809-91ad75fb315f?q=80&w=1000&auto=format&fit=crop" class="venue-img v-img-3" alt="Detail 3">
                 <img src="https://images.unsplash.com/photo-1607190074257-dd4b7af0309f?q=80&w=1000&auto=format&fit=crop" class="venue-img v-img-4" alt="Detail 4">
                 <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=1000&auto=format&fit=crop" class="venue-img v-img-5" alt="Detail 5">
             </div>
-
         </section>
 
         <!-- RSVP (LIME) -->
@@ -509,6 +542,9 @@
             direction: 'vertical',
         });
 
+        // STOP SCROLL INITIALLY (Waiting for loader)
+        lenis.stop();
+
         function raf(time) {
             lenis.raf(time);
             requestAnimationFrame(raf);
@@ -516,7 +552,61 @@
         requestAnimationFrame(raf);
 
         gsap.registerPlugin(ScrollTrigger);
-        
+        // --- LOADER ANIMATION (UPDATED: Scale Up & Stack) ---
+        // --- LOADER ANIMATION (UPDATED: Pop Up & Fall Down) ---
+        function initLoader() {
+            const loaderTl = gsap.timeline({
+                onComplete: () => {
+                    lenis.start(); 
+                }
+            });
+
+            loaderTl.clear();
+
+            // A. THE POP & STACK (Entrance)
+            // Images pop up from scale 0 to 1 with a bounce
+            loaderTl.fromTo(".loader-card", 
+                { 
+                    scale: 0, 
+                    opacity: 0,
+                    rotation: () => Math.random() * 30 - 15 
+                },
+                {
+                    scale: 1, 
+                    opacity: 1,
+                    rotation: () => Math.random() * 20 - 10, // Random tilt for messy stack
+                    duration: 1.0,
+                    stagger: 0.5, // 500ms delay per image
+                    ease: "back.out(1.4)" 
+                }
+            );
+
+            // B. THE PAUSE
+            loaderTl.to({}, { duration: 0.5 });
+
+            // C. THE EXIT (Gravity Drop)
+            // Images fall DOWN off the screen
+            loaderTl.to(".loader-card", {
+                y: window.innerHeight + 200, // Fall way below bottom of screen
+                rotation: () => Math.random() * 60 - 30, // Tumble slightly as they fall
+                opacity: 0, // Fade out slightly as they drop
+                duration: 0.8,
+                stagger: 0.05, // Fall almost together but loosely
+                ease: "power2.in" // Gravity acceleration
+            }, "exit");
+
+            // D. REVEAL CONTENT
+            // Curtain slides UP to reveal site
+            loaderTl.to(".loader-overlay", {
+                yPercent: -100,
+                duration: 1.0,
+                ease: "power2.inOut"
+            }, "exit+=0.1");
+        }
+
+        window.addEventListener("load", initLoader);
+
+
         // 2. BACKGROUND SLIDESHOW
         const slides = document.querySelectorAll('.slide');
         const slideDuration = 6; 
@@ -555,10 +645,7 @@
             });
         });
 
-        // --- NEW: PARALLAX SCROLLING FOR BOTH INTRO AND VENUE ---
         if (window.innerWidth > 768) {
-            
-            // Helper to create parallax
             const createParallax = (selector, trigger) => {
                 const images = document.querySelectorAll(selector);
                 images.forEach((img, i) => {
@@ -579,19 +666,14 @@
                     );
                 });
             };
-
-            // Apply to Intro
             createParallax(".intro-img-scatter", ".section-intro");
-            
-            // Apply to Venue
             createParallax(".venue-img", ".section-venue");
 
         } else {
-            // Mobile Fallbacks
              gsap.from(".venue-img, .intro-img-scatter", {
                 y: 50, opacity: 0, duration: 0.8, stagger: 0.1,
                 scrollTrigger: {
-                    trigger: ".section-intro", // Trigger individually in real app, simplified here
+                    trigger: ".section-intro",
                     start: "top 70%"
                 }
              });
