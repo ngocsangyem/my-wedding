@@ -552,8 +552,8 @@
         requestAnimationFrame(raf);
 
         gsap.registerPlugin(ScrollTrigger);
-        // --- LOADER ANIMATION (UPDATED: Scale Up & Stack) ---
-        // --- LOADER ANIMATION (UPDATED: Pop Up & Fall Down) ---
+        
+        // --- LOADER ANIMATION (UPDATED: Top-to-Bottom Fall) ---
         function initLoader() {
             const loaderTl = gsap.timeline({
                 onComplete: () => {
@@ -564,7 +564,6 @@
             loaderTl.clear();
 
             // A. THE POP & STACK (Entrance)
-            // Images pop up from scale 0 to 1 with a bounce
             loaderTl.fromTo(".loader-card", 
                 { 
                     scale: 0, 
@@ -574,9 +573,9 @@
                 {
                     scale: 1, 
                     opacity: 1,
-                    rotation: () => Math.random() * 20 - 10, // Random tilt for messy stack
+                    rotation: () => Math.random() * 20 - 10, 
                     duration: 1.0,
-                    stagger: 0.5, // 500ms delay per image
+                    stagger: 0.5, 
                     ease: "back.out(1.4)" 
                 }
             );
@@ -584,24 +583,26 @@
             // B. THE PAUSE
             loaderTl.to({}, { duration: 0.5 });
 
-            // C. THE EXIT (Gravity Drop)
-            // Images fall DOWN off the screen
+            // C. THE EXIT (Gravity Drop from Top)
             loaderTl.to(".loader-card", {
-                y: window.innerHeight + 200, // Fall way below bottom of screen
-                rotation: () => Math.random() * 60 - 30, // Tumble slightly as they fall
-                opacity: 0, // Fade out slightly as they drop
-                duration: 0.8,
-                stagger: 0.05, // Fall almost together but loosely
-                ease: "power2.in" // Gravity acceleration
+                y: window.innerHeight + 400, 
+                rotation: () => Math.random() * 60 - 30, 
+                opacity: 0, 
+                duration: 1.0, 
+                stagger: {
+                    each: 0.45, 
+                    from: "end" 
+                },
+                ease: "power2.in" 
             }, "exit");
 
-            // D. REVEAL CONTENT
-            // Curtain slides UP to reveal site
+            // D. REVEAL CONTENT - FIXED TIMING
+            // Use ">" to wait for the previous staggered sequence to finish
             loaderTl.to(".loader-overlay", {
                 yPercent: -100,
-                duration: 1.0,
+                duration: 1.2,
                 ease: "power2.inOut"
-            }, "exit+=0.1");
+            }, ">"); 
         }
 
         window.addEventListener("load", initLoader);
