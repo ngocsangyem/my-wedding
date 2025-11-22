@@ -1,903 +1,434 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A & J | The Wedding Countdown</title>
-    
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap"
+        rel="stylesheet">
 
     <!-- GSAP & Lenis -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
 
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        accent: '#E5CFCF', // Muted Blush
+                        black: '#0a0a0a',
+                        offwhite: '#f4f4f4',
+                        loader: '#EBE6E6'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    transitionTimingFunction: {
+                        'out-expo': 'cubic-bezier(0.25, 1, 0.5, 1)',
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
-        :root {
-            /* Main Accent Color (Muted Blush) */
-            --color-accent: #E5CFCF; 
-            --color-black: #0a0a0a;
-            --color-white: #ffffff;
-            --color-offwhite: #f4f4f4;
-            --font-serif: 'Playfair Display', serif;
-            --font-sans: 'Inter', sans-serif;
-            --ease-out: cubic-bezier(0.25, 1, 0.5, 1);
-            --count-height: 3.5rem;
+        /* Utility for Noise Overlay (Tailwind doesn't support url() in bg arbitrary easily without config) */
+        .bg-noise {
+            background-image: url('https://grainy-gradients.vercel.app/noise.svg');
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html.lenis {
-            height: auto;
-        }
-        
-        .lenis.lenis-smooth {
-            scroll-behavior: auto;
-        }
-
-        body {
-            background-color: var(--color-black);
-            color: var(--color-white);
-            font-family: var(--font-sans);
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        /* --- FLOWER PETAL ANIMATION STYLES --- */
+        /* Petal Animation Class (Dynamic JS Element) */
         .petal {
             position: fixed;
             pointer-events: none;
             z-index: 9999;
-            /* Leaf/Petal Shape */
             border-radius: 50% 0 50% 0;
+            /* Leaf shape */
             will-change: transform, opacity;
         }
 
-        /* --- LOADER OVERLAY --- */
-        .loader-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            background-color: #EBE6E6; 
-            z-index: 9999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            visibility: visible; 
-        }
-
-        .loader-stack {
-            position: relative;
-            width: 280px;
-            height: 350px;
-            perspective: 1200px; 
-        }
-
-        .loader-card {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border: 12px solid white;
-            border-bottom: 30px solid white; 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
-            transform-origin: center center;
-            will-change: transform, opacity;
-            opacity: 0; 
-        }
-
-        /* --- 1. FIXED BACKGROUND LAYER --- */
-        .bg-layer {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            z-index: -1;
-            overflow: hidden;
-            pointer-events: none;
-        }
-
-        .slide {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            opacity: 0;
-            transform: scale(1);
-            will-change: transform, opacity;
-        }
-
-        .noise-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 9999;
-            opacity: 0.07;
-            background: url('https://grainy-gradients.vercel.app/noise.svg');
-        }
-
-        /* --- 2. TYPOGRAPHY --- */
-        h1, h2, h3 {
-            font-family: var(--font-serif);
-            font-weight: 400;
-            line-height: 1;
-        }
-
-        .display-text {
-            font-size: clamp(3rem, 8vw, 9rem);
-            letter-spacing: -0.03em;
-            transform-origin: center center;
-        }
-
-        .editorial-text {
-            font-size: clamp(1.5rem, 4vw, 4rem);
-            font-style: italic;
-        }
-
-        .meta-text {
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            opacity: 0.8;
-        }
-
-        /* --- 3. SECTIONS --- */
-        main {
-            position: relative;
-            z-index: 1;
-        }
-
-        /* Hero */
-        .section-hero {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 2rem;
-            position: relative;
-            z-index: 1;
-            width: 100%;
-        }
-
-        .hero-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            mix-blend-mode: difference;
-        }
-
-        .hero-center { text-align: center; }
-
-        .hero-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-        }
-
-        /* --- INTRO SECTION --- */
-        .section-intro {
-            background-color: var(--color-accent);
-            color: var(--color-black);
-            min-height: 150vh;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            z-index: 5;
-            box-shadow: 0 -50px 100px rgba(0,0,0,0.3);
-            overflow: hidden;
-        }
-
-        .intro-content-layer {
-            position: relative;
-            z-index: 10;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2rem;
-            max-width: 800px;
-            padding: 2rem;
-        }
-
-        .intro-gallery {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1; 
-            pointer-events: none;
-        }
-
-        .intro-img-scatter {
-            position: absolute;
-            object-fit: cover;
-            border-radius: 4px;
-            transition: transform 0.1s linear; 
-            opacity: 0.9; 
-        }
-
-        .i-img-1 { top: 15%; left: 8%; width: 18vw; height: 24vw; z-index: 2; }
-        .i-img-2 { bottom: 20%; left: 5%; width: 15vw; height: 15vw; z-index: 1; }
-        .i-img-3 { top: 10%; right: 5%; width: 22vw; height: 16vw; z-index: 1; }
-        .i-img-4 { bottom: 15%; right: 10%; width: 16vw; height: 22vw; z-index: 2; }
-
-        /* --- VENUE SECTION --- */
-        .section-venue {
-            background-color: var(--color-black);
-            color: var(--color-accent);
-            min-height: 150vh;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            z-index: 5;
-            overflow: hidden;
-        }
-
-        .venue-content-layer {
-            position: relative;
-            z-index: 10;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2rem;
-            max-width: 800px;
-            padding: 2rem;
-        }
-
-        .venue-details {
-            margin-top: 2rem;
-            display: flex;
-            gap: 4rem;
-            color: var(--color-white);
-        }
-
-        .detail-block {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .venue-gallery {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        .venue-img {
-            position: absolute;
-            object-fit: cover;
-            filter: grayscale(100%);
-            transition: filter 0.5s ease;
-            border-radius: 4px;
-        }
-
-        .venue-img:hover { filter: grayscale(0%); }
-
-        .v-img-1 { top: 10%; left: 5%; width: 20vw; height: 25vw; z-index: 2; }
-        .v-img-2 { top: 15%; right: 8%; width: 18vw; height: 12vw; z-index: 1; }
-        .v-img-3 { bottom: 10%; left: 12%; width: 15vw; height: 15vw; z-index: 2; }
-        .v-img-4 { bottom: 20%; right: 5%; width: 22vw; height: 28vw; z-index: 1; }
-        .v-img-5 { top: 50%; left: -5%; width: 12vw; height: 18vw; z-index: 0; opacity: 0.6; }
-
-        /* --- RSVP Section --- */
-        .section-rsvp {
-            background-color: var(--color-accent);
-            color: var(--color-black);
-            min-height: 100vh; 
-            padding: 6rem 2rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            position: relative;
-            z-index: 5;
-        }
-
-        /* RSVP Form Styles */
-        .rsvp-form {
-            width: 100%;
-            max-width: 650px;
-            margin-top: 5rem;
-            display: flex;
-            flex-direction: column;
-            gap: 2.5rem;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-            text-align: left;
-        }
-
-        .form-group label {
-            font-family: var(--font-sans);
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            opacity: 0.6;
-            font-weight: 500;
-        }
-
-        .form-input {
+        /* Hide scrollbar for cleaner look */
+        ::-webkit-scrollbar {
+            width: 0px;
             background: transparent;
-            border: none;
-            border-bottom: 1px solid rgba(0,0,0,0.3);
-            padding: 0.5rem 0;
-            font-family: var(--font-serif);
-            font-size: 1.5rem; 
-            color: var(--color-black);
-            outline: none;
-            border-radius: 0;
-            transition: border-color 0.3s ease;
-        }
-
-        .form-input::placeholder {
-            color: rgba(0,0,0,0.2);
-            font-family: var(--font-sans);
-            font-size: 1rem;
-            font-style: italic;
-        }
-
-        .form-input:focus {
-            border-bottom-color: var(--color-black);
-        }
-
-        /* Custom Radio */
-        .radio-group {
-            display: flex;
-            gap: 2rem;
-            margin-top: 0.5rem;
-        }
-
-        .radio-option {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            cursor: pointer;
-            font-family: var(--font-serif);
-            font-size: 1.2rem;
-        }
-
-        .radio-option input[type="radio"] {
-            appearance: none;
-            width: 1.2rem;
-            height: 1.2rem;
-            border: 1px solid var(--color-black);
-            border-radius: 50%;
-            display: grid;
-            place-content: center;
-            cursor: pointer;
-            margin: 0;
-        }
-
-        .radio-option input[type="radio"]::before {
-            content: "";
-            width: 0.6rem;
-            height: 0.6rem;
-            border-radius: 50%;
-            transform: scale(0);
-            transition: 120ms transform ease-in-out;
-            background-color: var(--color-black);
-        }
-
-        .radio-option input[type="radio"]:checked::before {
-            transform: scale(1);
-        }
-
-        /* Submit Button */
-        .btn-submit {
-            margin-top: 2rem;
-            padding: 1.5rem 3rem;
-            background: transparent;
-            border: 1px solid var(--color-black);
-            color: var(--color-black);
-            font-family: var(--font-sans);
-            font-size: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            cursor: pointer;
-            transition: all 0.4s ease;
-            align-self: center; 
-            position: relative; /* Necessary for calculating position for petals */
-        }
-
-        .btn-submit:hover {
-            background: var(--color-black);
-            color: var(--color-accent);
-        }
-
-        /* --- MAP / JOURNEY SECTION (Clean Editorial) --- */
-        .section-map {
-            background-color: var(--color-white);
-            color: var(--color-black);
-            padding: 10rem 2rem;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-            z-index: 5;
-            clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
-            margin-bottom: 20vh;
-        }
-
-        .locations-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 6rem;
-            max-width: 1400px;
-            width: 100%;
-            margin-top: 6rem;
-        }
-
-        .location-block {
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-        }
-
-        .map-frame {
-            width: 100%;
-            aspect-ratio: 4 / 3; 
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
-            transform: translateZ(0); 
-        }
-
-        .map-iframe {
-            width: 100%;
-            height: 100%;
-            border: 0;
-            filter: grayscale(100%) contrast(1.1) brightness(1.05);
-            transition: filter 0.6s ease, transform 0.6s ease;
-        }
-        
-        .map-frame:hover .map-iframe {
-            filter: grayscale(0%) contrast(1) brightness(1);
-            transform: scale(1.03); 
-        }
-
-        .loc-header {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            border-left: 2px solid var(--color-accent);
-            padding-left: 1.5rem;
-        }
-
-        .loc-type {
-            font-family: var(--font-sans);
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            color: #888;
-        }
-
-        .loc-title {
-            font-family: var(--font-serif);
-            font-size: 2.2rem;
-            line-height: 1.1;
-        }
-
-        .loc-meta-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-top: 0.5rem;
-        }
-
-        .loc-address {
-            font-family: var(--font-sans);
-            opacity: 0.7;
-            line-height: 1.6;
-            font-size: 0.95rem;
-            max-width: 60%;
-        }
-
-        .link-arrow {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            text-decoration: none;
-            color: var(--color-black);
-            font-family: var(--font-sans);
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-top: 1.5rem;
-            position: relative;
-            padding-bottom: 4px;
-        }
-
-        .link-arrow::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 1px;
-            background-color: currentColor;
-            transform: scaleX(0);
-            transform-origin: right;
-            transition: transform 0.4s ease;
-        }
-
-        .link-arrow:hover::after {
-            transform: scaleX(1);
-            transform-origin: left;
-        }
-
-        .qr-minimal {
-            width: 80px;
-            height: 80px;
-            border: 1px solid #eee;
-            padding: 5px;
-            transition: transform 0.3s ease;
-        }
-        
-        .qr-minimal:hover {
-            transform: scale(1.1);
-            border-color: var(--color-accent);
-        }
-
-        .qr-label {
-            display: block;
-            margin-top: 0.5rem;
-            font-size: 0.6rem;
-            color: #999;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            text-align: center;
-        }
-
-        /* Footer spacer */
-        .section-footer {
-            height: 40vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            pointer-events: none;
-            position: relative;
-            z-index: 1;
-        }
-        
-        /* --- COUNTDOWN STYLES --- */
-        .countdown-wrap { display: flex; gap: 2rem; position: relative; }
-        .count-unit { display: flex; flex-direction: column; align-items: center; }
-        .reel-window {
-            height: var(--count-height); overflow: hidden; position: relative; display: block;
-            mask-image: linear-gradient(to bottom, transparent 0%, black 25%, black 75%, transparent 100%);
-            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 25%, black 75%, transparent 100%);
-        }
-        .reel-strip { display: flex; flex-direction: column; will-change: transform; }
-        .num-item {
-            height: var(--count-height); display: flex; align-items: center; justify-content: center;
-            font-family: var(--font-serif); font-size: 3rem; line-height: var(--count-height);
-            font-variant-numeric: tabular-nums; font-feature-settings: "tnum";
-        }
-        .count-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.2em; margin-top: 0.5rem; }
-
-        /* MOBILE BREAKPOINTS */
-        @media (max-width: 768px) {
-            .display-text { font-size: 3.5rem; }
-            .section-rsvp { clip-path: none; margin-bottom: 0; min-height: auto; padding-bottom: 4rem; }
-            
-            .countdown-wrap { gap: 0.8rem; }
-            :root { --count-height: 2.5rem; }
-            .num-item { font-size: 2rem; }
-            .count-label { font-size: 0.6rem; letter-spacing: 0.1em; }
-
-            .section-intro, .section-venue {
-                min-height: auto;
-                padding: 4rem 1.5rem;
-                flex-direction: column;
-                height: auto;
-            }
-
-            .intro-content-layer, .venue-content-layer {
-                position: relative;
-                margin-bottom: 3rem;
-                z-index: 2;
-                padding: 0;
-            }
-
-            .intro-gallery, .venue-gallery {
-                position: relative;
-                height: auto;
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 1rem;
-                width: 100%;
-            }
-
-            .intro-img-scatter, .venue-img {
-                position: relative;
-                width: 100%;
-                height: 200px;
-                top: auto !important;
-                left: auto !important;
-                right: auto !important;
-                bottom: auto !important;
-                opacity: 1 !important;
-            }
-
-            .i-img-3, .v-img-3 { grid-column: span 2; height: 250px; }
-            
-            .venue-details { flex-direction: column; gap: 2rem; }
-            
-            /* Mobile Loader Adjustments */
-            .loader-stack { width: 220px; height: 280px; }
-
-            /* Mobile Form */
-            .rsvp-form { margin-top: 3rem; gap: 2rem; }
-            .form-row { grid-template-columns: 1fr; gap: 2rem; }
-            .form-input { font-size: 1.2rem; }
-            .btn-submit { width: 100%; text-align: center; }
-
-            /* Mobile Map */
-            .locations-grid { grid-template-columns: 1fr; gap: 5rem; }
-            .section-map { padding: 6rem 1.5rem; margin-bottom: 0; clip-path: none; }
-            .map-frame { aspect-ratio: 16 / 9; }
         }
     </style>
 </head>
-<body>
 
-    <div class="noise-overlay"></div>
+<body class="bg-black text-white font-sans antialiased overflow-x-hidden selection:bg-accent selection:text-black">
+
+    <!-- Noise Overlay -->
+    <div class="fixed inset-0 pointer-events-none z-[9999] opacity-[0.07] bg-noise w-full h-full"></div>
 
     <!-- LOADING OVERLAY -->
-    <div class="loader-overlay">
-        <div class="loader-stack">
-            <!-- Polaroid Style Images (Opacity 0 handled in CSS for GSAP entrance) -->
-            <img src="https://images.unsplash.com/photo-1523438885200-e635ba2c371e?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&q=80&w=1000" class="loader-card" alt="Loader 1">
-            <img src="https://images.unsplash.com/photo-1502635385003-ee1e6a1a742d?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&q=80&w=1000" class="loader-card" alt="Loader 2">
-            <img src="https://plus.unsplash.com/premium_photo-1675851210020-045950ac0215?q=80&w=973&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&q=80&w=1000" class="loader-card" alt="Loader 3">
-            <img src="https://plus.unsplash.com/premium_photo-1673897888993-a1db844c2ca1?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&q=80&w=1000" class="loader-card" alt="Loader 4">
-            <!-- Topmost image -->
-            <img src="https://images.unsplash.com/photo-1550784718-990c6de52adf?q=80&w=984&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&q=80&w=1000" class="loader-card" alt="Loader 5">
+    <div
+        class="loader-overlay fixed inset-0 w-full h-screen bg-loader z-[9999] flex justify-center items-center visible">
+        <!-- Stack Container with Perspective -->
+        <div class="loader-stack relative w-[220px] h-[280px] md:w-[280px] md:h-[350px] [perspective:1200px]">
+            <!-- Cards -->
+            <img src="https://images.unsplash.com/photo-1523438885200-e635ba2c371e?q=80&w=987&auto=format&fit=crop"
+                class="loader-card absolute inset-0 w-full h-full object-cover border-[12px] border-white border-b-[30px] shadow-2xl opacity-0 origin-center will-change-transform"
+                alt="Loader 1">
+            <img src="https://images.unsplash.com/photo-1502635385003-ee1e6a1a742d?q=80&w=987&auto=format&fit=crop"
+                class="loader-card absolute inset-0 w-full h-full object-cover border-[12px] border-white border-b-[30px] shadow-2xl opacity-0 origin-center will-change-transform"
+                alt="Loader 2">
+            <img src="https://plus.unsplash.com/premium_photo-1675851210020-045950ac0215?q=80&w=973&auto=format&fit=crop"
+                class="loader-card absolute inset-0 w-full h-full object-cover border-[12px] border-white border-b-[30px] shadow-2xl opacity-0 origin-center will-change-transform"
+                alt="Loader 3">
+            <img src="https://plus.unsplash.com/premium_photo-1673897888993-a1db844c2ca1?q=80&w=987&auto=format&fit=crop"
+                class="loader-card absolute inset-0 w-full h-full object-cover border-[12px] border-white border-b-[30px] shadow-2xl opacity-0 origin-center will-change-transform"
+                alt="Loader 4">
+            <img src="https://images.unsplash.com/photo-1550784718-990c6de52adf?q=80&w=984&auto=format&fit=crop"
+                class="loader-card absolute inset-0 w-full h-full object-cover border-[12px] border-white border-b-[30px] shadow-2xl opacity-0 origin-center will-change-transform"
+                alt="Loader 5">
         </div>
     </div>
 
-    <!-- 1. Fixed Background Slideshow -->
-    <div class="bg-layer" id="bg-layer">
-        <img src="https://images.unsplash.com/photo-1532712938310-34cb3982ef74?q=80&w=2370&auto=format&fit=crop" class="slide" alt="Wedding 1">
-        <img src="https://images.unsplash.com/photo-1606800052052-a08af7148866?q=80&w=2370&auto=format&fit=crop" class="slide" alt="Wedding 2">
-        <img src="https://images.unsplash.com/photo-1591700331354-f7eea65d1ce8?q=80&w=2370&auto=format&fit=crop" class="slide" alt="Wedding 3">
+    <!-- FIXED BACKGROUND SLIDESHOW -->
+    <div class="bg-layer fixed inset-0 w-full h-screen z-[-1] overflow-hidden pointer-events-none">
+        <img src="https://images.unsplash.com/photo-1532712938310-34cb3982ef74?q=80&w=2370&auto=format&fit=crop"
+            class="slide absolute inset-0 w-full h-full object-cover opacity-0 scale-100 will-change-transform"
+            alt="Wedding 1">
+        <img src="https://images.unsplash.com/photo-1606800052052-a08af7148866?q=80&w=2370&auto=format&fit=crop"
+            class="slide absolute inset-0 w-full h-full object-cover opacity-0 scale-100 will-change-transform"
+            alt="Wedding 2">
+        <img src="https://images.unsplash.com/photo-1591700331354-f7eea65d1ce8?q=80&w=2370&auto=format&fit=crop"
+            class="slide absolute inset-0 w-full h-full object-cover opacity-0 scale-100 will-change-transform"
+            alt="Wedding 3">
     </div>
 
-    <main>
-        
-        <!-- HERO -->
-        <section class="section-hero">
-            <div class="hero-header">
-                <div class="meta-text">EST. 2025</div>
-                <div class="meta-text">NYC</div>
+    <main class="relative z-10">
+
+        <!-- HERO SECTION -->
+        <section class="section-hero h-screen flex flex-col justify-between p-8 relative z-10 w-full">
+            <div class="hero-header flex justify-between items-start mix-blend-difference text-white/90">
+                <div class="text-sm uppercase tracking-widest opacity-80">EST. 2025</div>
+                <div class="text-sm uppercase tracking-widest opacity-80">NYC</div>
             </div>
-            <div class="hero-center">
-                <h1 class="display-text">Anna &<br>James</h1>
+            <div class="hero-center text-center">
+                <h1
+                    class="display-text font-serif font-normal leading-none tracking-tight origin-center text-[3.5rem] md:text-[clamp(3rem,8vw,9rem)]">
+                    Anna &<br>James
+                </h1>
             </div>
-            <div class="hero-footer">
-                <div class="meta-text">Scroll to Begin</div>
-                <div class="meta-text">09.21.25</div>
+            <div class="hero-footer flex justify-between items-end text-white/80">
+                <div class="text-sm uppercase tracking-widest opacity-80">Scroll to Begin</div>
+                <div class="text-sm uppercase tracking-widest opacity-80">09.21.25</div>
             </div>
         </section>
 
-        <!-- INTRO (BLUSH) -->
-        <section class="section-intro">
-            <div class="intro-content-layer">
-                <h2 class="editorial-text split-reveal" style="text-align: center;">
+        <!-- INTRO SECTION (BLUSH) - UX FIXED -->
+        <section
+            class="section-intro bg-accent text-black min-h-screen md:min-h-[150vh] flex flex-col md:justify-center md:items-center relative z-20 overflow-hidden shadow-[0_-50px_100px_rgba(0,0,0,0.3)] py-24 px-6 md:p-0">
+
+            <!-- Text Content -->
+            <div
+                class="intro-content-layer relative z-20 text-center flex flex-col items-center gap-8 max-w-3xl md:p-8 mb-12 md:mb-0 mx-auto">
+                <h2
+                    class="editorial-text split-reveal font-serif italic text-[3rem] md:text-[clamp(1.5rem,4vw,4rem)] leading-tight md:leading-none">
                     "We loved with a love that was more than love."
                 </h2>
-                <p style="margin-top: 2rem; line-height: 1.6; max-width: 400px; text-align: center;" class="fade-reveal">
-                    Join us for a weekend of celebration, art, and romance in the heart of the city. We cannot wait to share this chapter with our favorite people.
+                <p class="fade-reveal mt-4 md:mt-8 leading-relaxed max-w-md text-center text-sm md:text-base">
+                    Join us for a weekend of celebration, art, and romance in the heart of the city. We cannot wait to
+                    share this chapter with our favorite people.
                 </p>
             </div>
-            <div class="intro-gallery">
-                <img src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=2070&auto=format&fit=crop" class="intro-img-scatter i-img-1" alt="Couple 1">
-                <img src="https://images.unsplash.com/photo-1621621667797-e06afc217fb0?q=80&w=1000&auto=format&fit=crop" class="intro-img-scatter i-img-2" alt="Hands">
-                <img src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2070&auto=format&fit=crop" class="intro-img-scatter i-img-3" alt="Atmosphere">
-                <img src="https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?q=80&w=1000&auto=format&fit=crop" class="intro-img-scatter i-img-4" alt="Flowers">
+
+            <!-- Floating Images Gallery -->
+            <!-- MOBILE: Relative Grid (below text) | DESKTOP: Absolute Scatter (behind text) -->
+            <div
+                class="intro-gallery relative w-full h-auto grid grid-cols-2 gap-4 mt-8 md:mt-0 md:absolute md:top-0 md:left-0 md:h-full md:block md:pointer-events-none z-10 md:z-[1]">
+
+                <!-- Image 1 -->
+                <img src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=2070&auto=format&fit=crop"
+                    class="intro-img-scatter i-img-1 w-full h-[250px] object-cover rounded-lg md:rounded 
+                            md:absolute md:top-[15%] md:left-[8%] md:w-[18vw] md:h-[24vw] 
+                            opacity-100 md:opacity-90 z-20" alt="Couple 1">
+
+                <!-- Image 2 -->
+                <img src="https://images.unsplash.com/photo-1621621667797-e06afc217fb0?q=80&w=1000&auto=format&fit=crop"
+                    class="intro-img-scatter i-img-2 w-full h-[250px] object-cover rounded-lg md:rounded mt-8 md:mt-0 
+                            md:absolute md:bottom-[20%] md:left-[5%] md:w-[15vw] md:h-[15vw] 
+                            opacity-100 md:opacity-90 z-10" alt="Hands">
+
+                <!-- Image 3 (Span 2 on mobile for variety) -->
+                <img src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2070&auto=format&fit=crop"
+                    class="intro-img-scatter i-img-3 w-full h-[300px] col-span-2 object-cover rounded-lg md:rounded 
+                            md:col-span-1 md:h-[250px] 
+                            md:absolute md:top-[10%] md:right-[5%] md:w-[22vw] md:h-[16vw] 
+                            opacity-100 md:opacity-90 z-10" alt="Atmosphere">
+
+                <!-- Image 4 -->
+                <img src="https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?q=80&w=1000&auto=format&fit=crop"
+                    class="intro-img-scatter i-img-4 w-full h-[250px] object-cover rounded-lg md:rounded 
+                            md:absolute md:bottom-[15%] md:right-[10%] md:w-[16vw] md:h-[22vw] 
+                            opacity-100 md:opacity-90 z-20" alt="Flowers">
             </div>
         </section>
 
-        <!-- VENUE (BLACK) -->
-        <section class="section-venue">
-            <div class="venue-content-layer">
-                <div class="meta-text fade-reveal" style="color: var(--color-accent);">The Location</div>
-                <h2 class="display-text split-reveal">The Public<br>Library</h2>
-                <div class="venue-details">
-                    <div class="detail-block fade-reveal">
-                        <span class="meta-text" style="color: #999;">Ceremony</span>
-                        <span style="font-size: 1.5rem; font-family: var(--font-serif);">4:30 PM</span>
+        <!-- VENUE SECTION (BLACK) -->
+        <section
+            class="section-venue bg-black text-accent min-h-[150vh] flex justify-center items-center relative z-20 overflow-hidden py-16 px-6 md:p-0">
+            <div
+                class="venue-content-layer relative z-10 text-center flex flex-col items-center gap-8 max-w-3xl md:p-8 mb-12 md:mb-0">
+                <div class="meta-text fade-reveal text-accent text-sm uppercase tracking-widest opacity-80">The Location
+                </div>
+                <h2
+                    class="display-text split-reveal font-serif font-normal leading-none tracking-tight text-[3.5rem] md:text-[clamp(3rem,8vw,9rem)] text-white">
+                    The Public<br>Library</h2>
+
+                <div class="venue-details mt-8 flex flex-col md:flex-row gap-8 md:gap-16 text-white">
+                    <div class="detail-block fade-reveal flex flex-col gap-2">
+                        <span class="meta-text text-[#999] text-xs uppercase tracking-widest">Ceremony</span>
+                        <span class="font-serif text-2xl">4:30 PM</span>
                     </div>
-                    <div class="detail-block fade-reveal">
-                        <span class="meta-text" style="color: #999;">Cocktails</span>
-                        <span style="font-size: 1.5rem; font-family: var(--font-serif);">6:00 PM</span>
+                    <div class="detail-block fade-reveal flex flex-col gap-2">
+                        <span class="meta-text text-[#999] text-xs uppercase tracking-widest">Cocktails</span>
+                        <span class="font-serif text-2xl">6:00 PM</span>
                     </div>
-                    <div class="detail-block fade-reveal">
-                        <span class="meta-text" style="color: #999;">Reception</span>
-                        <span style="font-size: 1.5rem; font-family: var(--font-serif);">7:30 PM</span>
+                    <div class="detail-block fade-reveal flex flex-col gap-2">
+                        <span class="meta-text text-[#999] text-xs uppercase tracking-widest">Reception</span>
+                        <span class="font-serif text-2xl">7:30 PM</span>
                     </div>
                 </div>
             </div>
-            <div class="venue-gallery">
-                <img src="https://images.unsplash.com/photo-1519225421980-715cb0202128?q=80&w=1000&auto=format&fit=crop" class="venue-img v-img-1" alt="Detail 1">
-                <img src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?q=80&w=1000&auto=format&fit=crop" class="venue-img v-img-2" alt="Detail 2">
-                <img src="https://images.unsplash.com/photo-1550005809-91ad75fb315f?q=80&w=1000&auto=format&fit=crop" class="venue-img v-img-3" alt="Detail 3">
-                <img src="https://images.unsplash.com/photo-1607190074257-dd4b7af0309f?q=80&w=1000&auto=format&fit=crop" class="venue-img v-img-4" alt="Detail 4">
-                <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=1000&auto=format&fit=crop" class="venue-img v-img-5" alt="Detail 5">
+
+            <!-- Venue Gallery (Tailwind Arbitrary Positioning) -->
+            <div
+                class="venue-gallery absolute top-0 left-0 w-full h-full z-[1] pointer-events-none grid grid-cols-2 gap-4 md:block">
+                <img src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=2070&auto=format&fit=crop"
+                    class="venue-img v-img-1 relative w-full h-[200px] md:absolute md:top-[10%] md:left-[5%] md:w-[20vw] md:h-[25vw] object-cover grayscale rounded transition-all duration-500 hover:grayscale-0 z-20"
+                    alt="Couple 1">
+                <img src="https://images.unsplash.com/photo-1621621667797-e06afc217fb0?q=80&w=1000&auto=format&fit=crop"
+                    class="venue-img v-img-2 relative w-full h-[200px] md:absolute md:top-[15%] md:right-[8%] md:w-[18vw] md:h-[12vw] object-cover grayscale rounded transition-all duration-500 hover:grayscale-0 z-10"
+                    alt="Hands">
+                <img src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2070&auto=format&fit=crop"
+                    class="venue-img v-img-3 relative w-full h-[200px] col-span-2 md:col-span-1 md:h-[250px] md:absolute md:bottom-[10%] md:left-[12%] md:w-[15vw] md:h-[15vw] object-cover grayscale rounded transition-all duration-500 hover:grayscale-0 z-20"
+                    alt="Atmosphere">
+                <img src="https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?q=80&w=1000&auto=format&fit=crop"
+                    class="venue-img v-img-4 relative w-full h-[200px] md:absolute md:bottom-[20%] md:right-[5%] md:w-[22vw] md:h-[28vw] object-cover grayscale rounded transition-all duration-500 hover:grayscale-0 z-10"
+                    alt="Flowers">
+                <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=1000&auto=format&fit=crop"
+                    class="venue-img v-img-5 relative w-full h-[200px] md:absolute md:top-[50%] md:left-[-5%] md:w-[12vw] md:h-[18vw] object-cover grayscale rounded transition-all duration-500 hover:grayscale-0 opacity-60 z-0"
+                    alt="Detail 5">
             </div>
         </section>
 
-        <!-- RSVP (BLUSH) -->
-        <section class="section-rsvp">
-            <h2 class="editorial-text split-reveal" style="text-align: center;">Be Part of Our Story</h2>
-            
+        <!-- RSVP SECTION (BLUSH) -->
+        <section
+            class="section-rsvp bg-accent text-black min-h-screen py-24 px-8 flex flex-col items-center justify-start relative z-20 md:pb-16 pb-32">
+            <h2 class="editorial-text split-reveal text-center font-serif italic text-[clamp(1.5rem,4vw,4rem)]">Be Part
+                of Our Story</h2>
+
             <!-- COUNTDOWN -->
-            <div class="countdown-wrap fade-reveal" style="margin-top: 3rem;">
-                <div class="count-unit">
-                    <div class="reel-window"><div class="reel-strip" id="days-reel"><div class="num-item">00</div></div></div>
-                    <span class="count-label">Days</span>
+            <div class="countdown-wrap fade-reveal mt-12 flex gap-4 md:gap-8">
+                <div class="count-unit flex flex-col items-center">
+                    <div
+                        class="reel-window h-[2.5rem] md:h-[3.5rem] overflow-hidden relative block [mask-image:linear-gradient(to_bottom,transparent_0%,black_25%,black_75%,transparent_100%)]">
+                        <div class="reel-strip flex flex-col will-change-transform" id="days-reel">
+                            <div
+                                class="num-item h-[2.5rem] md:h-[3.5rem] flex items-center justify-center font-serif text-[2rem] md:text-[3rem] leading-[2.5rem] md:leading-[3.5rem] tabular-nums">
+                                00</div>
+                        </div>
+                    </div>
+                    <span
+                        class="count-label text-[0.6rem] md:text-[0.75rem] uppercase tracking-[0.2em] mt-2">Days</span>
                 </div>
-                <div class="count-unit">
-                    <div class="reel-window"><div class="reel-strip" id="hours-reel"><div class="num-item">00</div></div></div>
-                    <span class="count-label">Hrs</span>
+                <div class="count-unit flex flex-col items-center">
+                    <div
+                        class="reel-window h-[2.5rem] md:h-[3.5rem] overflow-hidden relative block [mask-image:linear-gradient(to_bottom,transparent_0%,black_25%,black_75%,transparent_100%)]">
+                        <div class="reel-strip flex flex-col will-change-transform" id="hours-reel">
+                            <div
+                                class="num-item h-[2.5rem] md:h-[3.5rem] flex items-center justify-center font-serif text-[2rem] md:text-[3rem] leading-[2.5rem] md:leading-[3.5rem] tabular-nums">
+                                00</div>
+                        </div>
+                    </div>
+                    <span class="count-label text-[0.6rem] md:text-[0.75rem] uppercase tracking-[0.2em] mt-2">Hrs</span>
                 </div>
-                <div class="count-unit">
-                    <div class="reel-window"><div class="reel-strip" id="mins-reel"><div class="num-item">00</div></div></div>
-                    <span class="count-label">Mins</span>
+                <div class="count-unit flex flex-col items-center">
+                    <div
+                        class="reel-window h-[2.5rem] md:h-[3.5rem] overflow-hidden relative block [mask-image:linear-gradient(to_bottom,transparent_0%,black_25%,black_75%,transparent_100%)]">
+                        <div class="reel-strip flex flex-col will-change-transform" id="mins-reel">
+                            <div
+                                class="num-item h-[2.5rem] md:h-[3.5rem] flex items-center justify-center font-serif text-[2rem] md:text-[3rem] leading-[2.5rem] md:leading-[3.5rem] tabular-nums">
+                                00</div>
+                        </div>
+                    </div>
+                    <span
+                        class="count-label text-[0.6rem] md:text-[0.75rem] uppercase tracking-[0.2em] mt-2">Mins</span>
                 </div>
-                <div class="count-unit">
-                    <div class="reel-window"><div class="reel-strip" id="secs-reel"><div class="num-item">00</div></div></div>
-                    <span class="count-label">Secs</span>
+                <div class="count-unit flex flex-col items-center">
+                    <div
+                        class="reel-window h-[2.5rem] md:h-[3.5rem] overflow-hidden relative block [mask-image:linear-gradient(to_bottom,transparent_0%,black_25%,black_75%,transparent_100%)]">
+                        <div class="reel-strip flex flex-col will-change-transform" id="secs-reel">
+                            <div
+                                class="num-item h-[2.5rem] md:h-[3.5rem] flex items-center justify-center font-serif text-[2rem] md:text-[3rem] leading-[2.5rem] md:leading-[3.5rem] tabular-nums">
+                                00</div>
+                        </div>
+                    </div>
+                    <span
+                        class="count-label text-[0.6rem] md:text-[0.75rem] uppercase tracking-[0.2em] mt-2">Secs</span>
                 </div>
             </div>
 
             <!-- GUEST FORM -->
-            <!-- Added onsubmit handler to trigger the celebration function -->
-            <form class="rsvp-form fade-reveal" onsubmit="event.preventDefault(); celebrateRSVP(this.querySelector('.btn-submit'));">
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Full Name</label>
-                        <input type="text" class="form-input" placeholder="Jane Doe" required>
+            <form class="rsvp-form fade-reveal w-full max-w-2xl mt-12 md:mt-20 flex flex-col gap-8 md:gap-10"
+                onsubmit="event.preventDefault(); celebrateRSVP(this.querySelector('.btn-submit'));">
+
+                <div class="form-row grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="form-group flex flex-col gap-3 text-left">
+                        <label class="font-sans text-xs uppercase tracking-[0.1em] opacity-60 font-medium">Full
+                            Name</label>
+                        <input type="text"
+                            class="form-input bg-transparent border-none border-b border-black/30 py-2 font-serif text-xl md:text-2xl text-black outline-none transition-colors duration-300 focus:border-black placeholder-black/20"
+                            placeholder="Jane Doe" required>
                     </div>
-                    <div class="form-group">
-                        <label>Email</label>
-                        <input type="email" class="form-input" placeholder="jane@example.com" required>
+                    <div class="form-group flex flex-col gap-3 text-left">
+                        <label class="font-sans text-xs uppercase tracking-[0.1em] opacity-60 font-medium">Email</label>
+                        <input type="email"
+                            class="form-input bg-transparent border-none border-b border-black/30 py-2 font-serif text-xl md:text-2xl text-black outline-none transition-colors duration-300 focus:border-black placeholder-black/20"
+                            placeholder="jane@example.com" required>
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label>Relationship</label>
-                    <select class="form-input" required style="cursor: pointer;">
+                <div class="form-group flex flex-col gap-3 text-left">
+                    <label
+                        class="font-sans text-xs uppercase tracking-[0.1em] opacity-60 font-medium">Relationship</label>
+                    <select
+                        class="form-input bg-transparent border-none border-b border-black/30 py-2 font-serif text-xl md:text-2xl text-black outline-none transition-colors duration-300 focus:border-black cursor-pointer"
+                        required>
                         <option value="" disabled selected>Choose relationship</option>
                         <option value="family">Family</option>
                         <option value="friend">Friend</option>
                         <option value="colleague">Colleague</option>
                     </select>
                 </div>
-                
-                <div class="form-group">
-                    <label>Will you be attending?</label>
-                    <div class="radio-group">
-                        <label class="radio-option">
-                            <input type="radio" name="attendance" value="yes" checked>
+
+                <div class="form-group flex flex-col gap-3 text-left">
+                    <label class="font-sans text-xs uppercase tracking-[0.1em] opacity-60 font-medium">Will you be
+                        attending?</label>
+                    <div class="radio-group flex gap-8 mt-2">
+                        <label
+                            class="radio-option flex items-center gap-3 cursor-pointer font-serif text-lg md:text-xl">
+                            <input type="radio" name="attendance" value="yes" checked
+                                class="appearance-none w-5 h-5 border border-black rounded-full grid place-content-center cursor-pointer before:content-[''] before:w-2.5 before:h-2.5 before:rounded-full before:bg-black before:scale-0 checked:before:scale-100 before:transition-transform before:duration-100">
                             <span>Yes, joyfully!</span>
                         </label>
-                        <label class="radio-option">
-                            <input type="radio" name="attendance" value="no">
+                        <label
+                            class="radio-option flex items-center gap-3 cursor-pointer font-serif text-lg md:text-xl">
+                            <input type="radio" name="attendance" value="no"
+                                class="appearance-none w-5 h-5 border border-black rounded-full grid place-content-center cursor-pointer before:content-[''] before:w-2.5 before:h-2.5 before:rounded-full before:bg-black before:scale-0 checked:before:scale-100 before:transition-transform before:duration-100">
                             <span>Regretfully decline</span>
                         </label>
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label>Message / Dietary</label>
-                    <input type="text" class="form-input" placeholder="Any dietary restrictions?">
+                <div class="form-group flex flex-col gap-3 text-left">
+                    <label class="font-sans text-xs uppercase tracking-[0.1em] opacity-60 font-medium">Message /
+                        Dietary</label>
+                    <input type="text"
+                        class="form-input bg-transparent border-none border-b border-black/30 py-2 font-serif text-xl md:text-2xl text-black outline-none transition-colors duration-300 focus:border-black placeholder-black/20"
+                        placeholder="Any dietary restrictions?">
                 </div>
 
-                <button type="submit" class="btn-submit">Confirm RSVP</button>
+                <button type="submit"
+                    class="btn-submit relative self-center mt-8 px-12 py-6 bg-transparent border border-black text-black font-sans text-base uppercase tracking-[0.1em] transition-all duration-300 hover:bg-black hover:text-accent w-full md:w-auto text-center cursor-pointer">Confirm
+                    RSVP</button>
             </form>
-
         </section>
 
-        <!-- MAP / JOURNEY (REDESIGNED: CLEAN EDITORIAL) -->
-        <section class="section-map">
-            <div class="meta-text fade-reveal">Getting There</div>
-            <h2 class="editorial-text split-reveal" style="margin-top: 1rem; text-align: center; color: var(--color-black);">
+        <!-- MAP / JOURNEY SECTION (Clean Editorial) -->
+        <section
+            class="section-map bg-white text-black py-24 px-6 md:py-40 md:px-8 min-h-screen flex flex-col items-center relative z-50 mb-[20vh] [clip-path:none] md:[clip-path:polygon(0_0,100%_0,100%_85%,0_100%)]">
+            <div class="meta-text fade-reveal text-sm uppercase tracking-[0.1em] opacity-80">Getting There</div>
+            <h2
+                class="editorial-text split-reveal mt-4 text-center font-serif font-normal text-[clamp(3rem,8vw,9rem)] text-black leading-none">
                 The Journey
             </h2>
 
-            <div class="locations-grid">
-                
+            <div
+                class="locations-grid grid grid-cols-1 md:grid-cols-2 gap-20 md:gap-24 mt-16 md:mt-24 w-full max-w-[1400px]">
+
                 <!-- Location 1: Church -->
-                <div class="location-block fade-reveal">
-                    <div class="map-frame">
-                        <iframe class="map-iframe" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.0299957356464!2d-73.97639338459356!3d40.75846537932676!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c258f97bdb102b%3A0xea6f5927a61a3d42!2sSt.%20Patrick's%20Cathedral!5e0!3m2!1sen!2sus!4v1698999999999!5m2!1sen!2sus" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                    </div>
-                    
-                    <div class="loc-header">
-                        <span class="loc-type">Ceremony</span>
-                        <h3 class="loc-title">St. Patrick's<br>Cathedral</h3>
+                <div class="location-block fade-reveal flex flex-col gap-8">
+                    <div
+                        class="map-frame w-full aspect-video md:aspect-[4/3] relative overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.08)] group">
+                        <iframe
+                            class="map-iframe w-full h-full border-0 grayscale contrast-[1.1] brightness-105 transition-all duration-500 ease-out group-hover:grayscale-0 group-hover:contrast-100 group-hover:brightness-100 group-hover:scale-105"
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.0299957356464!2d-73.97639338459356!3d40.75846537932676!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c258f97bdb102b%3A0xea6f5927a61a3d42!2sSt.%20Patrick's%20Cathedral!5e0!3m2!1sen!2sus!4v1698999999999!5m2!1sen!2sus"
+                            allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                     </div>
 
-                    <div class="loc-meta-row">
-                        <div class="loc-text-col">
-                            <p class="loc-address">
+                    <div class="loc-header flex flex-col gap-2 border-l-2 border-accent pl-6">
+                        <span class="loc-type font-sans text-xs uppercase tracking-[0.15em] text-[#888]">Ceremony</span>
+                        <h3 class="loc-title font-serif text-[2.2rem] leading-[1.1]">St. Patrick's<br>Cathedral</h3>
+                    </div>
+
+                    <div class="loc-meta-row flex justify-between items-start mt-2">
+                        <div class="loc-text-col max-w-[60%]">
+                            <p class="loc-address font-sans opacity-70 leading-relaxed text-[0.95rem]">
                                 5th Ave, New York, NY 10022<br>
-                                <span style="color: #999; font-size: 0.85em;">Enter via Main Doors</span>
+                                <span class="text-[#999] text-[0.85em]">Enter via Main Doors</span>
                             </p>
-                            <a href="https://goo.gl/maps/StPatricksCathedral" target="_blank" class="link-arrow">
+                            <a href="https://goo.gl/maps/StPatricksCathedral" target="_blank"
+                                class="link-arrow inline-flex items-center gap-2 no-underline text-black font-sans text-[0.8rem] uppercase tracking-[0.1em] mt-6 relative pb-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1px] after:bg-current after:scale-x-0 after:origin-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-left">
                                 Navigate Here &rarr;
                             </a>
                         </div>
-                        <div style="text-align: center;">
-                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=St+Patricks+Cathedral+NYC" class="qr-minimal" alt="Scan for Church">
-                            <span class="qr-label">Scan</span>
+                        <div class="text-center hidden md:block">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=St+Patricks+Cathedral+NYC"
+                                class="qr-minimal w-20 h-20 border border-[#eee] p-[5px] transition-transform duration-300 hover:scale-110 hover:border-accent"
+                                alt="Scan for Church">
+                            <span
+                                class="qr-label block mt-2 text-[0.6rem] text-[#999] uppercase tracking-[0.05em] text-center">Scan</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- Location 2: Restaurant -->
-                <div class="location-block fade-reveal">
-                    <div class="map-frame">
-                        <iframe class="map-iframe" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.0647572686076!2d-73.9776766845936!3d40.75924347932682!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c258f9cfcb0c05%3A0x7d4d167969323c94!2sThe%20Modern!5e0!3m2!1sen!2sus!4v1698999999999!5m2!1sen!2sus" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                <div class="location-block fade-reveal flex flex-col gap-8">
+                    <div
+                        class="map-frame w-full aspect-video md:aspect-[4/3] relative overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.08)] group">
+                        <iframe
+                            class="map-iframe w-full h-full border-0 grayscale contrast-[1.1] brightness-105 transition-all duration-500 ease-out group-hover:grayscale-0 group-hover:contrast-100 group-hover:brightness-100 group-hover:scale-105"
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.0647572686076!2d-73.9776766845936!3d40.75924347932682!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c258f9cfcb0c05%3A0x7d4d167969323c94!2sThe%20Modern!5e0!3m2!1sen!2sus!4v1698999999999!5m2!1sen!2sus"
+                            allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                     </div>
 
-                    <div class="loc-header">
-                        <span class="loc-type">Reception</span>
-                        <h3 class="loc-title">The Modern<br>NYC</h3>
+                    <div class="loc-header flex flex-col gap-2 border-l-2 border-accent pl-6">
+                        <span
+                            class="loc-type font-sans text-xs uppercase tracking-[0.15em] text-[#888]">Reception</span>
+                        <h3 class="loc-title font-serif text-[2.2rem] leading-[1.1]">The Modern<br>NYC</h3>
                     </div>
 
-                    <div class="loc-meta-row">
-                        <div class="loc-text-col">
-                            <p class="loc-address">
+                    <div class="loc-meta-row flex justify-between items-start mt-2">
+                        <div class="loc-text-col max-w-[60%]">
+                            <p class="loc-address font-sans opacity-70 leading-relaxed text-[0.95rem]">
                                 9 W 53rd St, New York, NY 10019<br>
-                                <span style="color: #999; font-size: 0.85em;">Valet Parking Available</span>
+                                <span class="text-[#999] text-[0.85em]">Valet Parking Available</span>
                             </p>
-                            <a href="https://goo.gl/maps/TheModernNYC" target="_blank" class="link-arrow">
+                            <a href="https://goo.gl/maps/TheModernNYC" target="_blank"
+                                class="link-arrow inline-flex items-center gap-2 no-underline text-black font-sans text-[0.8rem] uppercase tracking-[0.1em] mt-6 relative pb-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1px] after:bg-current after:scale-x-0 after:origin-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-left">
                                 Navigate Here &rarr;
                             </a>
                         </div>
-                        <div style="text-align: center;">
-                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=The+Modern+NYC" class="qr-minimal" alt="Scan for Restaurant">
-                            <span class="qr-label">Scan</span>
+                        <div class="text-center hidden md:block">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=The+Modern+NYC"
+                                class="qr-minimal w-20 h-20 border border-[#eee] p-[5px] transition-transform duration-300 hover:scale-110 hover:border-accent"
+                                alt="Scan for Restaurant">
+                            <span
+                                class="qr-label block mt-2 text-[0.6rem] text-[#999] uppercase tracking-[0.05em] text-center">Scan</span>
                         </div>
                     </div>
                 </div>
@@ -905,12 +436,14 @@
             </div>
         </section>
 
-        <section class="section-footer"></section>
+        <!-- Spacer for seeing BG at bottom -->
+        <section class="section-footer h-[40vh] flex items-center justify-center pointer-events-none relative z-10">
+        </section>
 
     </main>
 
     <script>
-        // 1. SETUP LENIS
+        // 1. SETUP LENIS (Smooth Scroll)
         const lenis = new Lenis({
             duration: 1.2,
             easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -928,31 +461,31 @@
         requestAnimationFrame(raf);
 
         gsap.registerPlugin(ScrollTrigger);
-        
+
         // --- LOADER ANIMATION ---
         function initLoader() {
             const loaderTl = gsap.timeline({
                 onComplete: () => {
-                    lenis.start(); 
+                    lenis.start();
                 }
             });
 
             loaderTl.clear();
 
             // A. THE POP & STACK (Entrance)
-            loaderTl.fromTo(".loader-card", 
-                { 
-                    scale: 0, 
+            loaderTl.fromTo(".loader-card",
+                {
+                    scale: 0,
                     opacity: 0,
-                    rotation: () => Math.random() * 30 - 15 
+                    rotation: () => Math.random() * 30 - 15
                 },
                 {
-                    scale: 1, 
+                    scale: 1,
                     opacity: 1,
-                    rotation: () => Math.random() * 20 - 10, 
+                    rotation: () => Math.random() * 20 - 10,
                     duration: 1.0,
-                    stagger: 0.5, 
-                    ease: "back.out(1.4)" 
+                    stagger: 0.5,
+                    ease: "back.out(1.4)"
                 }
             );
 
@@ -961,15 +494,15 @@
 
             // C. THE EXIT (Gravity Drop from Top)
             loaderTl.to(".loader-card", {
-                y: window.innerHeight + 400, 
-                rotation: () => Math.random() * 60 - 30, 
-                opacity: 0, 
-                duration: 1.0, 
+                y: window.innerHeight + 400,
+                rotation: () => Math.random() * 60 - 30,
+                opacity: 0,
+                duration: 1.0,
                 stagger: {
-                    each: 0.45, 
-                    from: "end" 
+                    each: 0.45,
+                    from: "end"
                 },
-                ease: "power2.in" 
+                ease: "power2.in"
             }, "exit");
 
             // D. REVEAL CONTENT
@@ -977,7 +510,7 @@
                 yPercent: -100,
                 duration: 1.2,
                 ease: "power2.inOut"
-            }, ">"); 
+            }, ">");
         }
 
         window.addEventListener("load", initLoader);
@@ -985,8 +518,8 @@
 
         // 2. BACKGROUND SLIDESHOW
         const slides = document.querySelectorAll('.slide');
-        const slideDuration = 6; 
-        const fadeDuration = 1.5; 
+        const slideDuration = 6;
+        const fadeDuration = 1.5;
         const slideTimeline = gsap.timeline({ repeat: -1 });
 
         slides.forEach((slide, index) => {
@@ -995,7 +528,7 @@
             const tl = gsap.timeline({ defaults: { ease: "none" } });
             tl.to(slide, { scale: 1.15, duration: slideDuration + fadeDuration, ease: "power1.out" }, 0);
 
-            if(index < slides.length) {
+            if (index < slides.length) {
                 slideTimeline.add(tl, index * (slideDuration - fadeDuration));
                 slideTimeline.to(slide, { opacity: 0, duration: fadeDuration }, `> -${fadeDuration}`);
                 slideTimeline.to(nextSlide, { opacity: 1, duration: fadeDuration }, `<`);
@@ -1003,11 +536,7 @@
         });
 
         // 3. SCROLL INTERACTIONS
-        ScrollTrigger.create({
-            trigger: ".section-hero",
-            start: "top top", end: "bottom top", pin: true, pinSpacing: false, scrub: true
-        });
-
+        // Hero Parallax
         gsap.to(".hero-center", {
             scale: 0.8, opacity: 0,
             scrollTrigger: { trigger: ".section-hero", start: "top top", end: "80% top", scrub: true }
@@ -1025,12 +554,12 @@
             const createParallax = (selector, trigger) => {
                 const images = document.querySelectorAll(selector);
                 images.forEach((img, i) => {
-                    const speed = (i + 1) * 25; 
-                    const direction = i % 2 === 0 ? -1 : 1; 
-                    gsap.fromTo(img, 
+                    const speed = (i + 1) * 25;
+                    const direction = i % 2 === 0 ? -1 : 1;
+                    gsap.fromTo(img,
                         { yPercent: 40 * direction },
-                        { 
-                            yPercent: -20 * direction, 
+                        {
+                            yPercent: -20 * direction,
                             ease: "none",
                             scrollTrigger: {
                                 trigger: trigger,
@@ -1046,16 +575,16 @@
             createParallax(".venue-img", ".section-venue");
 
         } else {
-             gsap.from(".venue-img, .intro-img-scatter", {
+            gsap.from(".venue-img, .intro-img-scatter", {
                 y: 50, opacity: 0, duration: 0.8, stagger: 0.1,
                 scrollTrigger: {
                     trigger: ".section-intro",
                     start: "top 70%"
                 }
-             });
+            });
         }
 
-        // 4. COUNTDOWN
+        // 4. COUNTDOWN LOGIC
         const weddingDate = new Date('September 21, 2025 00:00:00').getTime();
 
         function getTimeRemaining() {
@@ -1074,11 +603,11 @@
         function buildReelStrip(targetVal, limit = 30) {
             let html = '';
             if (targetVal > limit) {
-                for (let i = targetVal; i > targetVal - 10; i--) html += `<div class="num-item">${i.toString().padStart(2, '0')}</div>`;
-                html += `<div class="num-item">...</div>`;
-                for (let i = 10; i >= 0; i--) html += `<div class="num-item">${i.toString().padStart(2, '0')}</div>`;
+                for (let i = targetVal; i > targetVal - 10; i--) html += `<div class="num-item h-[2.5rem] md:h-[3.5rem] flex items-center justify-center font-serif text-[2rem] md:text-[3rem] leading-[2.5rem] md:leading-[3.5rem] tabular-nums">${i.toString().padStart(2, '0')}</div>`;
+                html += `<div class="num-item h-[2.5rem] md:h-[3.5rem] flex items-center justify-center font-serif text-[2rem] md:text-[3rem] leading-[2.5rem] md:leading-[3.5rem] tabular-nums">...</div>`;
+                for (let i = 10; i >= 0; i--) html += `<div class="num-item h-[2.5rem] md:h-[3.5rem] flex items-center justify-center font-serif text-[2rem] md:text-[3rem] leading-[2.5rem] md:leading-[3.5rem] tabular-nums">${i.toString().padStart(2, '0')}</div>`;
             } else {
-                for (let i = targetVal; i >= 0; i--) html += `<div class="num-item">${i.toString().padStart(2, '0')}</div>`;
+                for (let i = targetVal; i >= 0; i--) html += `<div class="num-item h-[2.5rem] md:h-[3.5rem] flex items-center justify-center font-serif text-[2rem] md:text-[3rem] leading-[2.5rem] md:leading-[3.5rem] tabular-nums">${i.toString().padStart(2, '0')}</div>`;
             }
             return html;
         }
@@ -1095,10 +624,10 @@
 
         function updateReel(elementId, newVal) {
             const strip = document.getElementById(elementId);
-            const currentVal = strip.firstElementChild.innerText; 
+            const currentVal = strip.firstElementChild.innerText;
             if (currentVal !== newVal.toString().padStart(2, '0')) {
                 const newDiv = document.createElement('div');
-                newDiv.className = 'num-item';
+                newDiv.className = 'num-item h-[2.5rem] md:h-[3.5rem] flex items-center justify-center font-serif text-[2rem] md:text-[3rem] leading-[2.5rem] md:leading-[3.5rem] tabular-nums';
                 newDiv.innerText = newVal.toString().padStart(2, '0');
                 strip.prepend(newDiv);
                 const itemHeight = newDiv.offsetHeight;
@@ -1127,55 +656,39 @@
                         updateReel('mins-reel', now.minutes);
                         updateReel('secs-reel', now.seconds);
                     }, 1000);
-                }, 3500); 
+                }, 3500);
             }
         });
 
-        // 5. RSVP FLOWER CELEBRATION (NEW)
+        // 5. RSVP FLOWER CELEBRATION
         function celebrateRSVP(btn) {
-            // Safety check
             if (!btn) return;
-
-            // Show alert
             alert('RSVP Sent! We can\'t wait to see you.');
 
             const rect = btn.getBoundingClientRect();
-            // Calculate center of the button relative to viewport
             const startX = rect.left + rect.width / 2;
-            const startY = rect.top; // Shoot from top edge of button
+            const startY = rect.top;
 
-            // Create a container for petals if not exists
             let container = document.getElementById('petal-container');
             if (!container) {
                 container = document.createElement('div');
                 container.id = 'petal-container';
-                container.style.position = 'fixed';
-                container.style.top = '0';
-                container.style.left = '0';
-                container.style.width = '100%';
-                container.style.height = '100%';
-                container.style.pointerEvents = 'none';
-                container.style.zIndex = '9999';
+                container.className = 'fixed top-0 left-0 w-full h-full pointer-events-none z-[9999]';
                 document.body.appendChild(container);
             }
 
-            // Number of petals
             const petalCount = 30;
-            const colors = ['#FFFFFF', '#E5CFCF', '#F4F4F4']; // White, Blush, Off-white
+            const colors = ['#FFFFFF', '#E5CFCF', '#F4F4F4'];
 
             for (let i = 0; i < petalCount; i++) {
                 const petal = document.createElement('div');
                 petal.classList.add('petal');
-                
-                // Random size
-                const size = Math.random() * 10 + 8; // 8px to 18px
+
+                const size = Math.random() * 10 + 8;
                 petal.style.width = `${size}px`;
                 petal.style.height = `${size}px`;
-                
-                // Random color
                 petal.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                
-                // Set initial position at button center
+
                 gsap.set(petal, {
                     x: startX,
                     y: startY,
@@ -1185,19 +698,11 @@
 
                 container.appendChild(petal);
 
-                // Randomize physics
-                // X: Burst left and right (-150 to +150)
-                // Y: Shoot UP first (-100 to -250), then fall down
-                const angle = Math.random() * Math.PI; // 0 to 180 degrees roughly
-                const velocity = Math.random() * 100 + 50; 
-                
-                const endX = (Math.random() - 0.5) * 400; // Spread horizontal
-                const endY = -(Math.random() * 150 + 100); // Upward burst height
+                const endX = (Math.random() - 0.5) * 400;
+                const endY = -(Math.random() * 150 + 100);
 
-                // Create Timeline for each petal
                 const tl = gsap.timeline();
 
-                // 1. Burst Up & Out
                 tl.to(petal, {
                     x: startX + endX,
                     y: startY + endY,
@@ -1207,26 +712,24 @@
                     ease: "power1.out"
                 });
 
-                // 2. Float Down (Gravity)
                 tl.to(petal, {
-                    y: window.innerHeight + 50, // Fall off screen
-                    x: `+=${(Math.random() - 0.5) * 50}`, // Drift side to side slightly
+                    y: window.innerHeight + 50,
+                    x: `+=${(Math.random() - 0.5) * 50}`,
                     rotation: `+=${Math.random() * 180}`,
                     duration: 2 + Math.random(),
                     ease: "power1.in",
-                }, "-=0.2"); // Overlap slightly with burst
+                }, "-=0.2");
 
-                // 3. Fade Out
                 tl.to(petal, {
                     opacity: 0,
                     duration: 0.5
-                }, "-=0.5"); // Fade near end of fall
+                }, "-=0.5");
 
-                // Cleanup
                 tl.call(() => petal.remove());
             }
         }
 
     </script>
 </body>
+
 </html>
