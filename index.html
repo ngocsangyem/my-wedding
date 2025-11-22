@@ -43,22 +43,21 @@
     </script>
 
     <style>
-        /* Utility for Noise Overlay (Tailwind doesn't support url() in bg arbitrary easily without config) */
+        /* Utility for Noise Overlay */
         .bg-noise {
             background-image: url('https://grainy-gradients.vercel.app/noise.svg');
         }
 
-        /* Petal Animation Class (Dynamic JS Element) */
+        /* Petal Animation Class */
         .petal {
             position: fixed;
             pointer-events: none;
             z-index: 9999;
             border-radius: 50% 0 50% 0;
-            /* Leaf shape */
             will-change: transform, opacity;
         }
 
-        /* Hide scrollbar for cleaner look */
+        /* Hide scrollbar */
         ::-webkit-scrollbar {
             width: 0px;
             background: transparent;
@@ -74,9 +73,7 @@
     <!-- LOADING OVERLAY -->
     <div
         class="loader-overlay fixed inset-0 w-full h-screen bg-loader z-[9999] flex justify-center items-center visible">
-        <!-- Stack Container with Perspective -->
         <div class="loader-stack relative w-[220px] h-[280px] md:w-[280px] md:h-[350px] [perspective:1200px]">
-            <!-- Cards -->
             <img src="https://images.unsplash.com/photo-1523438885200-e635ba2c371e?q=80&w=987&auto=format&fit=crop"
                 class="loader-card absolute inset-0 w-full h-full object-cover border-[12px] border-white border-b-[30px] shadow-2xl opacity-0 origin-center will-change-transform"
                 alt="Loader 1">
@@ -128,11 +125,10 @@
             </div>
         </section>
 
-        <!-- INTRO SECTION (BLUSH) - UX FIXED -->
+        <!-- INTRO SECTION (BLUSH) -->
         <section
             class="section-intro bg-accent text-black min-h-screen md:min-h-[150vh] flex flex-col md:justify-center md:items-center relative z-20 overflow-hidden shadow-[0_-50px_100px_rgba(0,0,0,0.3)] py-24 px-6 md:p-0">
 
-            <!-- Text Content -->
             <div
                 class="intro-content-layer relative z-20 text-center flex flex-col items-center gap-8 max-w-3xl md:p-8 mb-12 md:mb-0 mx-auto">
                 <h2
@@ -145,50 +141,38 @@
                 </p>
             </div>
 
-            <!-- Floating Images Gallery -->
-            <!-- MOBILE: Relative Grid (below text) | DESKTOP: Absolute Scatter (behind text) -->
             <div
                 class="intro-gallery relative w-full h-auto grid grid-cols-2 gap-4 mt-8 md:mt-0 md:absolute md:top-0 md:left-0 md:h-full md:block md:pointer-events-none z-10 md:z-[1]">
-
-                <!-- Image 1 -->
                 <img src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=2070&auto=format&fit=crop"
-                    class="intro-img-scatter i-img-1 w-full h-[250px] object-cover rounded-lg md:rounded 
-                            md:absolute md:top-[15%] md:left-[8%] md:w-[18vw] md:h-[24vw] 
-                            opacity-100 md:opacity-90 z-20" alt="Couple 1">
-
-                <!-- Image 2 -->
+                    class="intro-img-scatter i-img-1 w-full h-[250px] object-cover rounded-lg md:rounded md:absolute md:top-[15%] md:left-[8%] md:w-[18vw] md:h-[24vw] opacity-100 md:opacity-90 z-20"
+                    alt="Couple 1">
                 <img src="https://images.unsplash.com/photo-1621621667797-e06afc217fb0?q=80&w=1000&auto=format&fit=crop"
-                    class="intro-img-scatter i-img-2 w-full h-[250px] object-cover rounded-lg md:rounded mt-8 md:mt-0 
-                            md:absolute md:bottom-[20%] md:left-[5%] md:w-[15vw] md:h-[15vw] 
-                            opacity-100 md:opacity-90 z-10" alt="Hands">
-
-                <!-- Image 3 (Span 2 on mobile for variety) -->
+                    class="intro-img-scatter i-img-2 w-full h-[250px] object-cover rounded-lg md:rounded mt-8 md:mt-0 md:absolute md:bottom-[20%] md:left-[5%] md:w-[15vw] md:h-[15vw] opacity-100 md:opacity-90 z-10"
+                    alt="Hands">
                 <img src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2070&auto=format&fit=crop"
-                    class="intro-img-scatter i-img-3 w-full h-[300px] col-span-2 object-cover rounded-lg md:rounded 
-                            md:col-span-1 md:h-[250px] 
-                            md:absolute md:top-[10%] md:right-[5%] md:w-[22vw] md:h-[16vw] 
-                            opacity-100 md:opacity-90 z-10" alt="Atmosphere">
-
-                <!-- Image 4 -->
+                    class="intro-img-scatter i-img-3 w-full h-[300px] col-span-2 object-cover rounded-lg md:rounded md:col-span-1 md:h-[250px] md:absolute md:top-[10%] md:right-[5%] md:w-[22vw] md:h-[16vw] opacity-100 md:opacity-90 z-10"
+                    alt="Atmosphere">
                 <img src="https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?q=80&w=1000&auto=format&fit=crop"
-                    class="intro-img-scatter i-img-4 w-full h-[250px] object-cover rounded-lg md:rounded 
-                            md:absolute md:bottom-[15%] md:right-[10%] md:w-[16vw] md:h-[22vw] 
-                            opacity-100 md:opacity-90 z-20" alt="Flowers">
+                    class="intro-img-scatter i-img-4 w-full h-[250px] object-cover rounded-lg md:rounded md:absolute md:bottom-[15%] md:right-[10%] md:w-[16vw] md:h-[22vw] opacity-100 md:opacity-90 z-20"
+                    alt="Flowers">
             </div>
         </section>
 
-        <!-- VENUE SECTION (BLACK) -->
+        <!-- VENUE SECTION (BLACK) - FIXED MOBILE UX & ANIMATION -->
         <section
-            class="section-venue bg-black text-accent min-h-[150vh] flex justify-center items-center relative z-20 overflow-hidden py-16 px-6 md:p-0">
+            class="section-venue bg-black text-accent min-h-screen md:min-h-[150vh] flex flex-col md:justify-center md:items-center relative z-20 overflow-hidden py-24 px-6 md:p-0">
+
+            <!-- Text (Stacked first on mobile) -->
             <div
-                class="venue-content-layer relative z-10 text-center flex flex-col items-center gap-8 max-w-3xl md:p-8 mb-12 md:mb-0">
+                class="venue-content-layer relative z-20 text-center flex flex-col items-center gap-8 max-w-3xl md:p-8 mb-16 md:mb-0 mx-auto">
                 <div class="meta-text fade-reveal text-accent text-sm uppercase tracking-widest opacity-80">The Location
                 </div>
                 <h2
                     class="display-text split-reveal font-serif font-normal leading-none tracking-tight text-[3.5rem] md:text-[clamp(3rem,8vw,9rem)] text-white">
                     The Public<br>Library</h2>
 
-                <div class="venue-details mt-8 flex flex-col md:flex-row gap-8 md:gap-16 text-white">
+                <div
+                    class="venue-details mt-4 md:mt-8 flex flex-col md:flex-row gap-8 md:gap-16 text-white w-full justify-center">
                     <div class="detail-block fade-reveal flex flex-col gap-2">
                         <span class="meta-text text-[#999] text-xs uppercase tracking-widest">Ceremony</span>
                         <span class="font-serif text-2xl">4:30 PM</span>
@@ -204,23 +188,37 @@
                 </div>
             </div>
 
-            <!-- Venue Gallery (Tailwind Arbitrary Positioning) -->
+            <!-- Venue Gallery (Float Grid Fixed) -->
+            <!-- Mobile: Relative offset grid | Desktop: Absolute scattered -->
             <div
-                class="venue-gallery absolute top-0 left-0 w-full h-full z-[1] pointer-events-none grid grid-cols-2 gap-4 md:block">
-                <img src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=2070&auto=format&fit=crop"
-                    class="venue-img v-img-1 relative w-full h-[200px] md:absolute md:top-[10%] md:left-[5%] md:w-[20vw] md:h-[25vw] object-cover grayscale rounded transition-all duration-500 hover:grayscale-0 z-20"
-                    alt="Couple 1">
-                <img src="https://images.unsplash.com/photo-1621621667797-e06afc217fb0?q=80&w=1000&auto=format&fit=crop"
-                    class="venue-img v-img-2 relative w-full h-[200px] md:absolute md:top-[15%] md:right-[8%] md:w-[18vw] md:h-[12vw] object-cover grayscale rounded transition-all duration-500 hover:grayscale-0 z-10"
-                    alt="Hands">
-                <img src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2070&auto=format&fit=crop"
-                    class="venue-img v-img-3 relative w-full h-[200px] col-span-2 md:col-span-1 md:h-[250px] md:absolute md:bottom-[10%] md:left-[12%] md:w-[15vw] md:h-[15vw] object-cover grayscale rounded transition-all duration-500 hover:grayscale-0 z-20"
-                    alt="Atmosphere">
-                <img src="https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?q=80&w=1000&auto=format&fit=crop"
-                    class="venue-img v-img-4 relative w-full h-[200px] md:absolute md:bottom-[20%] md:right-[5%] md:w-[22vw] md:h-[28vw] object-cover grayscale rounded transition-all duration-500 hover:grayscale-0 z-10"
-                    alt="Flowers">
+                class="venue-gallery relative w-full h-auto grid grid-cols-2 gap-4 md:gap-0 md:absolute md:top-0 md:left-0 md:w-full md:h-full md:block md:pointer-events-none z-10 md:z-[1]">
+
+                <!-- Mobile Col 1 / Desktop Pos 1 -->
+                <div class="flex flex-col gap-4">
+                    <img src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=2070&auto=format&fit=crop"
+                        class="venue-img v-img-1 w-full h-[240px] object-cover rounded-lg grayscale md:grayscale-0 md:rounded md:absolute md:top-[10%] md:left-[5%] md:w-[20vw] md:h-[25vw] transition-all duration-500 hover:grayscale-0 z-20"
+                        alt="Couple 1">
+
+                    <!-- Image 3 sits in col 1 on mobile -->
+                    <img src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2070&auto=format&fit=crop"
+                        class="venue-img v-img-3 w-full h-[300px] object-cover rounded-lg grayscale md:grayscale-0 md:rounded md:absolute md:bottom-[10%] md:left-[12%] md:w-[15vw] md:h-[15vw] transition-all duration-500 hover:grayscale-0 z-20"
+                        alt="Atmosphere">
+                </div>
+
+                <!-- Mobile Col 2 (Offset for Float Effect) / Desktop Pos 2 -->
+                <div class="flex flex-col gap-4 mt-12"> <!-- mt-12 creates the float/stagger effect -->
+                    <img src="https://images.unsplash.com/photo-1621621667797-e06afc217fb0?q=80&w=1000&auto=format&fit=crop"
+                        class="venue-img v-img-2 w-full h-[200px] object-cover rounded-lg grayscale md:grayscale-0 md:rounded md:absolute md:top-[15%] md:right-[8%] md:w-[18vw] md:h-[12vw] transition-all duration-500 hover:grayscale-0 z-10"
+                        alt="Hands">
+
+                    <img src="https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?q=80&w=1000&auto=format&fit=crop"
+                        class="venue-img v-img-4 w-full h-[280px] object-cover rounded-lg grayscale md:grayscale-0 md:rounded md:absolute md:bottom-[20%] md:right-[5%] md:w-[22vw] md:h-[28vw] transition-all duration-500 hover:grayscale-0 z-10"
+                        alt="Flowers">
+                </div>
+
+                <!-- Image 5 (Full Width Bottom on Mobile) -->
                 <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=1000&auto=format&fit=crop"
-                    class="venue-img v-img-5 relative w-full h-[200px] md:absolute md:top-[50%] md:left-[-5%] md:w-[12vw] md:h-[18vw] object-cover grayscale rounded transition-all duration-500 hover:grayscale-0 opacity-60 z-0"
+                    class="venue-img v-img-5 col-span-2 w-full h-[150px] object-cover rounded-lg grayscale md:grayscale-0 opacity-60 md:opacity-60 md:rounded md:absolute md:top-[50%] md:left-[-5%] md:w-[12vw] md:h-[18vw] transition-all duration-500 hover:grayscale-0 z-0"
                     alt="Detail 5">
             </div>
         </section>
@@ -231,7 +229,6 @@
             <h2 class="editorial-text split-reveal text-center font-serif italic text-[clamp(1.5rem,4vw,4rem)]">Be Part
                 of Our Story</h2>
 
-            <!-- COUNTDOWN -->
             <div class="countdown-wrap fade-reveal mt-12 flex gap-4 md:gap-8">
                 <div class="count-unit flex flex-col items-center">
                     <div
@@ -282,10 +279,8 @@
                 </div>
             </div>
 
-            <!-- GUEST FORM -->
             <form class="rsvp-form fade-reveal w-full max-w-2xl mt-12 md:mt-20 flex flex-col gap-8 md:gap-10"
                 onsubmit="event.preventDefault(); celebrateRSVP(this.querySelector('.btn-submit'));">
-
                 <div class="form-row grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div class="form-group flex flex-col gap-3 text-left">
                         <label class="font-sans text-xs uppercase tracking-[0.1em] opacity-60 font-medium">Full
@@ -301,7 +296,6 @@
                             placeholder="jane@example.com" required>
                     </div>
                 </div>
-
                 <div class="form-group flex flex-col gap-3 text-left">
                     <label
                         class="font-sans text-xs uppercase tracking-[0.1em] opacity-60 font-medium">Relationship</label>
@@ -314,7 +308,6 @@
                         <option value="colleague">Colleague</option>
                     </select>
                 </div>
-
                 <div class="form-group flex flex-col gap-3 text-left">
                     <label class="font-sans text-xs uppercase tracking-[0.1em] opacity-60 font-medium">Will you be
                         attending?</label>
@@ -333,7 +326,6 @@
                         </label>
                     </div>
                 </div>
-
                 <div class="form-group flex flex-col gap-3 text-left">
                     <label class="font-sans text-xs uppercase tracking-[0.1em] opacity-60 font-medium">Message /
                         Dietary</label>
@@ -341,14 +333,13 @@
                         class="form-input bg-transparent border-none border-b border-black/30 py-2 font-serif text-xl md:text-2xl text-black outline-none transition-colors duration-300 focus:border-black placeholder-black/20"
                         placeholder="Any dietary restrictions?">
                 </div>
-
                 <button type="submit"
                     class="btn-submit relative self-center mt-8 px-12 py-6 bg-transparent border border-black text-black font-sans text-base uppercase tracking-[0.1em] transition-all duration-300 hover:bg-black hover:text-accent w-full md:w-auto text-center cursor-pointer">Confirm
                     RSVP</button>
             </form>
         </section>
 
-        <!-- MAP / JOURNEY SECTION (Clean Editorial) -->
+        <!-- MAP / JOURNEY SECTION -->
         <section
             class="section-map bg-white text-black py-24 px-6 md:py-40 md:px-8 min-h-screen flex flex-col items-center relative z-50 mb-[20vh] [clip-path:none] md:[clip-path:polygon(0_0,100%_0,100%_85%,0_100%)]">
             <div class="meta-text fade-reveal text-sm uppercase tracking-[0.1em] opacity-80">Getting There</div>
@@ -359,8 +350,7 @@
 
             <div
                 class="locations-grid grid grid-cols-1 md:grid-cols-2 gap-20 md:gap-24 mt-16 md:mt-24 w-full max-w-[1400px]">
-
-                <!-- Location 1: Church -->
+                <!-- Location 1 -->
                 <div class="location-block fade-reveal flex flex-col gap-8">
                     <div
                         class="map-frame w-full aspect-video md:aspect-[4/3] relative overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.08)] group">
@@ -369,12 +359,10 @@
                             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.0299957356464!2d-73.97639338459356!3d40.75846537932676!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c258f97bdb102b%3A0xea6f5927a61a3d42!2sSt.%20Patrick's%20Cathedral!5e0!3m2!1sen!2sus!4v1698999999999!5m2!1sen!2sus"
                             allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                     </div>
-
                     <div class="loc-header flex flex-col gap-2 border-l-2 border-accent pl-6">
                         <span class="loc-type font-sans text-xs uppercase tracking-[0.15em] text-[#888]">Ceremony</span>
                         <h3 class="loc-title font-serif text-[2.2rem] leading-[1.1]">St. Patrick's<br>Cathedral</h3>
                     </div>
-
                     <div class="loc-meta-row flex justify-between items-start mt-2">
                         <div class="loc-text-col max-w-[60%]">
                             <p class="loc-address font-sans opacity-70 leading-relaxed text-[0.95rem]">
@@ -395,8 +383,7 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Location 2: Restaurant -->
+                <!-- Location 2 -->
                 <div class="location-block fade-reveal flex flex-col gap-8">
                     <div
                         class="map-frame w-full aspect-video md:aspect-[4/3] relative overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.08)] group">
@@ -405,13 +392,11 @@
                             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.0647572686076!2d-73.9776766845936!3d40.75924347932682!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c258f9cfcb0c05%3A0x7d4d167969323c94!2sThe%20Modern!5e0!3m2!1sen!2sus!4v1698999999999!5m2!1sen!2sus"
                             allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                     </div>
-
                     <div class="loc-header flex flex-col gap-2 border-l-2 border-accent pl-6">
                         <span
                             class="loc-type font-sans text-xs uppercase tracking-[0.15em] text-[#888]">Reception</span>
                         <h3 class="loc-title font-serif text-[2.2rem] leading-[1.1]">The Modern<br>NYC</h3>
                     </div>
-
                     <div class="loc-meta-row flex justify-between items-start mt-2">
                         <div class="loc-text-col max-w-[60%]">
                             <p class="loc-address font-sans opacity-70 leading-relaxed text-[0.95rem]">
@@ -432,102 +417,43 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </section>
 
-        <!-- Spacer for seeing BG at bottom -->
         <section class="section-footer h-[40vh] flex items-center justify-center pointer-events-none relative z-10">
         </section>
 
     </main>
 
     <script>
-        // 1. SETUP LENIS (Smooth Scroll)
-        const lenis = new Lenis({
-            duration: 1.2,
-            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-            smooth: true,
-            direction: 'vertical',
-        });
-
-        // STOP SCROLL INITIALLY (Waiting for loader)
+        // 1. SETUP LENIS
+        const lenis = new Lenis({ duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smooth: true, direction: 'vertical' });
         lenis.stop();
-
-        function raf(time) {
-            lenis.raf(time);
-            requestAnimationFrame(raf);
-        }
+        function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
         requestAnimationFrame(raf);
 
         gsap.registerPlugin(ScrollTrigger);
 
-        // --- LOADER ANIMATION ---
+        // 2. LOADER
         function initLoader() {
-            const loaderTl = gsap.timeline({
-                onComplete: () => {
-                    lenis.start();
-                }
-            });
-
+            const loaderTl = gsap.timeline({ onComplete: () => { lenis.start(); } });
             loaderTl.clear();
-
-            // A. THE POP & STACK (Entrance)
-            loaderTl.fromTo(".loader-card",
-                {
-                    scale: 0,
-                    opacity: 0,
-                    rotation: () => Math.random() * 30 - 15
-                },
-                {
-                    scale: 1,
-                    opacity: 1,
-                    rotation: () => Math.random() * 20 - 10,
-                    duration: 1.0,
-                    stagger: 0.5,
-                    ease: "back.out(1.4)"
-                }
-            );
-
-            // B. THE PAUSE
+            loaderTl.fromTo(".loader-card", { scale: 0, opacity: 0, rotation: () => Math.random() * 30 - 15 }, { scale: 1, opacity: 1, rotation: () => Math.random() * 20 - 10, duration: 1.0, stagger: 0.5, ease: "back.out(1.4)" });
             loaderTl.to({}, { duration: 0.5 });
-
-            // C. THE EXIT (Gravity Drop from Top)
-            loaderTl.to(".loader-card", {
-                y: window.innerHeight + 400,
-                rotation: () => Math.random() * 60 - 30,
-                opacity: 0,
-                duration: 1.0,
-                stagger: {
-                    each: 0.45,
-                    from: "end"
-                },
-                ease: "power2.in"
-            }, "exit");
-
-            // D. REVEAL CONTENT
-            loaderTl.to(".loader-overlay", {
-                yPercent: -100,
-                duration: 1.2,
-                ease: "power2.inOut"
-            }, ">");
+            loaderTl.to(".loader-card", { y: window.innerHeight + 400, rotation: () => Math.random() * 60 - 30, opacity: 0, duration: 1.0, stagger: { each: 0.45, from: "end" }, ease: "power2.in" }, "exit");
+            loaderTl.to(".loader-overlay", { yPercent: -100, duration: 1.2, ease: "power2.inOut" }, ">");
         }
-
         window.addEventListener("load", initLoader);
 
-
-        // 2. BACKGROUND SLIDESHOW
+        // 3. SLIDESHOW
         const slides = document.querySelectorAll('.slide');
-        const slideDuration = 6;
-        const fadeDuration = 1.5;
+        const slideDuration = 6; const fadeDuration = 1.5;
         const slideTimeline = gsap.timeline({ repeat: -1 });
-
         slides.forEach((slide, index) => {
             const nextSlide = slides[index + 1] || slides[0];
             gsap.set(slide, { opacity: index === 0 ? 1 : 0, scale: 1 });
             const tl = gsap.timeline({ defaults: { ease: "none" } });
             tl.to(slide, { scale: 1.15, duration: slideDuration + fadeDuration, ease: "power1.out" }, 0);
-
             if (index < slides.length) {
                 slideTimeline.add(tl, index * (slideDuration - fadeDuration));
                 slideTimeline.to(slide, { opacity: 0, duration: fadeDuration }, `> -${fadeDuration}`);
@@ -535,71 +461,38 @@
             }
         });
 
-        // 3. SCROLL INTERACTIONS
-        // Hero Parallax
-        gsap.to(".hero-center", {
-            scale: 0.8, opacity: 0,
-            scrollTrigger: { trigger: ".section-hero", start: "top top", end: "80% top", scrub: true }
-        });
+        // 4. SCROLL TRIGGERS
+        gsap.to(".hero-center", { scale: 0.8, opacity: 0, scrollTrigger: { trigger: ".section-hero", start: "top top", end: "80% top", scrub: true } });
 
         const revealElements = document.querySelectorAll(".split-reveal, .fade-reveal");
-        revealElements.forEach(el => {
-            gsap.from(el, {
-                y: 50, opacity: 0, duration: 1, ease: "power3.out",
-                scrollTrigger: { trigger: el, start: "top 85%" }
-            });
-        });
+        revealElements.forEach(el => { gsap.from(el, { y: 50, opacity: 0, duration: 1, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 85%" } }); });
 
+        // --- RESPONSIVE IMAGE ANIMATIONS (FIXED) ---
         if (window.innerWidth > 768) {
+            // Desktop Parallax
             const createParallax = (selector, trigger) => {
                 const images = document.querySelectorAll(selector);
                 images.forEach((img, i) => {
-                    const speed = (i + 1) * 25;
                     const direction = i % 2 === 0 ? -1 : 1;
-                    gsap.fromTo(img,
-                        { yPercent: 40 * direction },
-                        {
-                            yPercent: -20 * direction,
-                            ease: "none",
-                            scrollTrigger: {
-                                trigger: trigger,
-                                start: "top bottom",
-                                end: "bottom top",
-                                scrub: 1
-                            }
-                        }
-                    );
+                    gsap.fromTo(img, { yPercent: 40 * direction }, { yPercent: -20 * direction, ease: "none", scrollTrigger: { trigger: trigger, start: "top bottom", end: "bottom top", scrub: 1 } });
                 });
             };
             createParallax(".intro-img-scatter", ".section-intro");
             createParallax(".venue-img", ".section-venue");
-
         } else {
-            gsap.from(".venue-img, .intro-img-scatter", {
-                y: 50, opacity: 0, duration: 0.8, stagger: 0.1,
-                scrollTrigger: {
-                    trigger: ".section-intro",
-                    start: "top 70%"
-                }
-            });
+            // Mobile Animations - SEPARATED TRIGGERS
+            gsap.from(".intro-img-scatter", { y: 50, opacity: 0, duration: 0.8, stagger: 0.1, scrollTrigger: { trigger: ".section-intro", start: "top 70%" } });
+            gsap.from(".venue-img", { y: 50, opacity: 0, duration: 0.8, stagger: 0.1, scrollTrigger: { trigger: ".section-venue", start: "top 70%" } });
         }
 
-        // 4. COUNTDOWN LOGIC
+        // 5. COUNTDOWN
         const weddingDate = new Date('September 21, 2025 00:00:00').getTime();
-
         function getTimeRemaining() {
-            const now = new Date().getTime();
-            const gap = weddingDate - now;
+            const now = new Date().getTime(); const gap = weddingDate - now;
             if (gap < 0) return { days: 0, hours: 0, minutes: 0, seconds: 0 };
             const second = 1000, minute = second * 60, hour = minute * 60, day = hour * 24;
-            return {
-                days: Math.floor(gap / day),
-                hours: Math.floor((gap % day) / hour),
-                minutes: Math.floor((gap % hour) / minute),
-                seconds: Math.floor((gap % minute) / second)
-            };
+            return { days: Math.floor(gap / day), hours: Math.floor((gap % day) / hour), minutes: Math.floor((gap % hour) / minute), seconds: Math.floor((gap % minute) / second) };
         }
-
         function buildReelStrip(targetVal, limit = 30) {
             let html = '';
             if (targetVal > limit) {
@@ -611,124 +504,51 @@
             }
             return html;
         }
-
         function animateReel(elementId, targetVal) {
-            const strip = document.getElementById(elementId);
-            strip.innerHTML = buildReelStrip(targetVal);
-            const itemHeight = strip.lastElementChild.offsetHeight;
-            const totalItems = strip.children.length;
-            const totalHeight = totalItems * itemHeight;
-            gsap.set(strip, { y: -(totalHeight - itemHeight) });
-            gsap.to(strip, { y: 0, duration: 3.5, ease: "power4.out" });
+            const strip = document.getElementById(elementId); strip.innerHTML = buildReelStrip(targetVal);
+            const itemHeight = strip.lastElementChild.offsetHeight; const totalItems = strip.children.length; const totalHeight = totalItems * itemHeight;
+            gsap.set(strip, { y: -(totalHeight - itemHeight) }); gsap.to(strip, { y: 0, duration: 3.5, ease: "power4.out" });
         }
-
         function updateReel(elementId, newVal) {
-            const strip = document.getElementById(elementId);
-            const currentVal = strip.firstElementChild.innerText;
+            const strip = document.getElementById(elementId); const currentVal = strip.firstElementChild.innerText;
             if (currentVal !== newVal.toString().padStart(2, '0')) {
                 const newDiv = document.createElement('div');
                 newDiv.className = 'num-item h-[2.5rem] md:h-[3.5rem] flex items-center justify-center font-serif text-[2rem] md:text-[3rem] leading-[2.5rem] md:leading-[3.5rem] tabular-nums';
-                newDiv.innerText = newVal.toString().padStart(2, '0');
-                strip.prepend(newDiv);
-                const itemHeight = newDiv.offsetHeight;
-                gsap.set(strip, { y: -itemHeight });
-                gsap.to(strip, { y: 0, duration: 0.6, ease: "back.out(1.2)" });
-                if (strip.children.length > 5) strip.lastElementChild.remove();
+                newDiv.innerText = newVal.toString().padStart(2, '0'); strip.prepend(newDiv);
+                const itemHeight = newDiv.offsetHeight; gsap.set(strip, { y: -itemHeight });
+                gsap.to(strip, { y: 0, duration: 0.6, ease: "back.out(1.2)" }); if (strip.children.length > 5) strip.lastElementChild.remove();
             }
         }
-
         ScrollTrigger.create({
-            trigger: ".countdown-wrap",
-            start: "top 85%",
-            once: true,
+            trigger: ".countdown-wrap", start: "top 85%", once: true,
             onEnter: () => {
                 const t = getTimeRemaining();
-                animateReel('days-reel', t.days);
-                animateReel('hours-reel', t.hours);
-                animateReel('mins-reel', t.minutes);
-                animateReel('secs-reel', t.seconds);
-
-                setTimeout(() => {
-                    setInterval(() => {
-                        const now = getTimeRemaining();
-                        updateReel('days-reel', now.days);
-                        updateReel('hours-reel', now.hours);
-                        updateReel('mins-reel', now.minutes);
-                        updateReel('secs-reel', now.seconds);
-                    }, 1000);
-                }, 3500);
+                animateReel('days-reel', t.days); animateReel('hours-reel', t.hours); animateReel('mins-reel', t.minutes); animateReel('secs-reel', t.seconds);
+                setTimeout(() => { setInterval(() => { const now = getTimeRemaining(); updateReel('days-reel', now.days); updateReel('hours-reel', now.hours); updateReel('mins-reel', now.minutes); updateReel('secs-reel', now.seconds); }, 1000); }, 3500);
             }
         });
 
-        // 5. RSVP FLOWER CELEBRATION
+        // 6. RSVP FLOWER CELEBRATION
         function celebrateRSVP(btn) {
             if (!btn) return;
             alert('RSVP Sent! We can\'t wait to see you.');
-
-            const rect = btn.getBoundingClientRect();
-            const startX = rect.left + rect.width / 2;
-            const startY = rect.top;
-
+            const rect = btn.getBoundingClientRect(); const startX = rect.left + rect.width / 2; const startY = rect.top;
             let container = document.getElementById('petal-container');
-            if (!container) {
-                container = document.createElement('div');
-                container.id = 'petal-container';
-                container.className = 'fixed top-0 left-0 w-full h-full pointer-events-none z-[9999]';
-                document.body.appendChild(container);
-            }
-
-            const petalCount = 30;
-            const colors = ['#FFFFFF', '#E5CFCF', '#F4F4F4'];
-
+            if (!container) { container = document.createElement('div'); container.id = 'petal-container'; container.className = 'fixed top-0 left-0 w-full h-full pointer-events-none z-[9999]'; document.body.appendChild(container); }
+            const petalCount = 30; const colors = ['#FFFFFF', '#E5CFCF', '#F4F4F4'];
             for (let i = 0; i < petalCount; i++) {
-                const petal = document.createElement('div');
-                petal.classList.add('petal');
-
-                const size = Math.random() * 10 + 8;
-                petal.style.width = `${size}px`;
-                petal.style.height = `${size}px`;
-                petal.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-
-                gsap.set(petal, {
-                    x: startX,
-                    y: startY,
-                    opacity: 1,
-                    scale: 0
-                });
-
+                const petal = document.createElement('div'); petal.classList.add('petal');
+                const size = Math.random() * 10 + 8; petal.style.width = `${size}px`; petal.style.height = `${size}px`; petal.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                gsap.set(petal, { x: startX, y: startY, opacity: 1, scale: 0 });
                 container.appendChild(petal);
-
-                const endX = (Math.random() - 0.5) * 400;
-                const endY = -(Math.random() * 150 + 100);
-
+                const endX = (Math.random() - 0.5) * 400; const endY = -(Math.random() * 150 + 100);
                 const tl = gsap.timeline();
-
-                tl.to(petal, {
-                    x: startX + endX,
-                    y: startY + endY,
-                    rotation: Math.random() * 360,
-                    scale: 1,
-                    duration: 0.6 + Math.random() * 0.4,
-                    ease: "power1.out"
-                });
-
-                tl.to(petal, {
-                    y: window.innerHeight + 50,
-                    x: `+=${(Math.random() - 0.5) * 50}`,
-                    rotation: `+=${Math.random() * 180}`,
-                    duration: 2 + Math.random(),
-                    ease: "power1.in",
-                }, "-=0.2");
-
-                tl.to(petal, {
-                    opacity: 0,
-                    duration: 0.5
-                }, "-=0.5");
-
+                tl.to(petal, { x: startX + endX, y: startY + endY, rotation: Math.random() * 360, scale: 1, duration: 0.6 + Math.random() * 0.4, ease: "power1.out" });
+                tl.to(petal, { y: window.innerHeight + 50, x: `+=${(Math.random() - 0.5) * 50}`, rotation: `+=${Math.random() * 180}`, duration: 2 + Math.random(), ease: "power1.in", }, "-=0.2");
+                tl.to(petal, { opacity: 0, duration: 0.5 }, "-=0.5");
                 tl.call(() => petal.remove());
             }
         }
-
     </script>
 </body>
 
