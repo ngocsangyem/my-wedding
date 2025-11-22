@@ -17,7 +17,7 @@
 
     <style>
         :root {
-            /* UPDATED: Main Accent Color (Muted Blush) */
+            /* Main Accent Color (Muted Blush) */
             --color-accent: #E5CFCF; 
             --color-black: #0a0a0a;
             --color-white: #ffffff;
@@ -57,7 +57,6 @@
             left: 0;
             width: 100%;
             height: 100vh;
-            /* Slightly warmed up grey to match the blush */
             background-color: #EBE6E6; 
             z-index: 9999;
             display: flex;
@@ -184,7 +183,7 @@
 
         /* --- INTRO SECTION --- */
         .section-intro {
-            background-color: var(--color-accent); /* Using new Blush */
+            background-color: var(--color-accent);
             color: var(--color-black);
             min-height: 150vh;
             padding: 0;
@@ -235,7 +234,7 @@
         /* --- VENUE SECTION --- */
         .section-venue {
             background-color: var(--color-black);
-            color: var(--color-accent); /* Using new Blush text on black */
+            color: var(--color-accent);
             min-height: 150vh;
             padding: 0;
             display: flex;
@@ -299,7 +298,7 @@
 
         /* --- RSVP Section --- */
         .section-rsvp {
-            background-color: var(--color-accent); /* Using new Blush */
+            background-color: var(--color-accent);
             color: var(--color-black);
             min-height: 100vh; 
             padding: 6rem 2rem;
@@ -307,8 +306,6 @@
             flex-direction: column;
             align-items: center;
             justify-content: flex-start;
-            clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
-            margin-bottom: 20vh;
             position: relative;
             z-index: 5;
         }
@@ -411,7 +408,7 @@
             transform: scale(1);
         }
 
-        /* Submit Button (Reusing button style) */
+        /* Submit Button */
         .btn-submit {
             margin-top: 2rem;
             padding: 1.5rem 3rem;
@@ -432,7 +429,152 @@
             color: var(--color-accent);
         }
 
-        /* Footer reveal */
+        /* --- MAP / JOURNEY SECTION (Clean Editorial) --- */
+        .section-map {
+            background-color: var(--color-white);
+            color: var(--color-black);
+            padding: 10rem 2rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 5;
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+            margin-bottom: 20vh;
+        }
+
+        .locations-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6rem;
+            max-width: 1400px;
+            width: 100%;
+            margin-top: 6rem;
+        }
+
+        .location-block {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .map-frame {
+            width: 100%;
+            aspect-ratio: 4 / 3; 
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+            transform: translateZ(0); 
+        }
+
+        .map-iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+            filter: grayscale(100%) contrast(1.1) brightness(1.05);
+            transition: filter 0.6s ease, transform 0.6s ease;
+        }
+        
+        .map-frame:hover .map-iframe {
+            filter: grayscale(0%) contrast(1) brightness(1);
+            transform: scale(1.03); 
+        }
+
+        .loc-header {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            border-left: 2px solid var(--color-accent);
+            padding-left: 1.5rem;
+        }
+
+        .loc-type {
+            font-family: var(--font-sans);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: #888;
+        }
+
+        .loc-title {
+            font-family: var(--font-serif);
+            font-size: 2.2rem;
+            line-height: 1.1;
+        }
+
+        .loc-meta-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-top: 0.5rem;
+        }
+
+        .loc-address {
+            font-family: var(--font-sans);
+            opacity: 0.7;
+            line-height: 1.6;
+            font-size: 0.95rem;
+            max-width: 60%;
+        }
+
+        .link-arrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: var(--color-black);
+            font-family: var(--font-sans);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 1.5rem;
+            position: relative;
+            padding-bottom: 4px;
+        }
+
+        .link-arrow::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background-color: currentColor;
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.4s ease;
+        }
+
+        .link-arrow:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        .qr-minimal {
+            width: 80px;
+            height: 80px;
+            border: 1px solid #eee;
+            padding: 5px;
+            transition: transform 0.3s ease;
+        }
+        
+        .qr-minimal:hover {
+            transform: scale(1.1);
+            border-color: var(--color-accent);
+        }
+
+        .qr-label {
+            display: block;
+            margin-top: 0.5rem;
+            font-size: 0.6rem;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            text-align: center;
+        }
+
+        /* Footer spacer */
         .section-footer {
             height: 40vh;
             display: flex;
@@ -515,6 +657,11 @@
             .form-row { grid-template-columns: 1fr; gap: 2rem; }
             .form-input { font-size: 1.2rem; }
             .btn-submit { width: 100%; text-align: center; }
+
+            /* Mobile Map */
+            .locations-grid { grid-template-columns: 1fr; gap: 5rem; }
+            .section-map { padding: 6rem 1.5rem; margin-bottom: 0; clip-path: none; }
+            .map-frame { aspect-ratio: 16 / 9; }
         }
     </style>
 </head>
@@ -522,7 +669,7 @@
 
     <div class="noise-overlay"></div>
 
-    <!-- NEW: LOADING OVERLAY -->
+    <!-- LOADING OVERLAY -->
     <div class="loader-overlay">
         <div class="loader-stack">
             <!-- Polaroid Style Images (Opacity 0 handled in CSS for GSAP entrance) -->
@@ -630,7 +777,7 @@
                 </div>
             </div>
 
-            <!-- NEW: GUEST FORM -->
+            <!-- GUEST FORM -->
             <form class="rsvp-form fade-reveal" onsubmit="event.preventDefault(); alert('RSVP Sent! (This is a demo)');">
                 
                 <div class="form-row">
@@ -644,7 +791,6 @@
                     </div>
                 </div>
 
-                <!-- NEW: RELATIONSHIP SELECT -->
                 <div class="form-group">
                     <label>Relationship</label>
                     <select class="form-input" required style="cursor: pointer;">
@@ -671,13 +817,80 @@
 
                 <div class="form-group">
                     <label>Message / Dietary</label>
-                    <!-- A minimal single line input looks cleaner for editorial style than a boxy textarea -->
                     <input type="text" class="form-input" placeholder="Any dietary restrictions?">
                 </div>
 
                 <button type="submit" class="btn-submit">Confirm RSVP</button>
             </form>
 
+        </section>
+
+        <!-- MAP / JOURNEY (REDESIGNED: CLEAN EDITORIAL) -->
+        <section class="section-map">
+            <div class="meta-text fade-reveal">Getting There</div>
+            <h2 class="editorial-text split-reveal" style="margin-top: 1rem; text-align: center; color: var(--color-black);">
+                The Journey
+            </h2>
+
+            <div class="locations-grid">
+                
+                <!-- Location 1: Church -->
+                <div class="location-block fade-reveal">
+                    <div class="map-frame">
+                        <iframe class="map-iframe" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.0299957356464!2d-73.97639338459356!3d40.75846537932676!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c258f97bdb102b%3A0xea6f5927a61a3d42!2sSt.%20Patrick's%20Cathedral!5e0!3m2!1sen!2sus!4v1698999999999!5m2!1sen!2sus" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    </div>
+                    
+                    <div class="loc-header">
+                        <span class="loc-type">Ceremony</span>
+                        <h3 class="loc-title">St. Patrick's<br>Cathedral</h3>
+                    </div>
+
+                    <div class="loc-meta-row">
+                        <div class="loc-text-col">
+                            <p class="loc-address">
+                                5th Ave, New York, NY 10022<br>
+                                <span style="color: #999; font-size: 0.85em;">Enter via Main Doors</span>
+                            </p>
+                            <a href="https://goo.gl/maps/StPatricksCathedral" target="_blank" class="link-arrow">
+                                Navigate Here &rarr;
+                            </a>
+                        </div>
+                        <div style="text-align: center;">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=St+Patricks+Cathedral+NYC" class="qr-minimal" alt="Scan for Church">
+                            <span class="qr-label">Scan</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Location 2: Restaurant -->
+                <div class="location-block fade-reveal">
+                    <div class="map-frame">
+                        <iframe class="map-iframe" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.0647572686076!2d-73.9776766845936!3d40.75924347932682!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c258f9cfcb0c05%3A0x7d4d167969323c94!2sThe%20Modern!5e0!3m2!1sen!2sus!4v1698999999999!5m2!1sen!2sus" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    </div>
+
+                    <div class="loc-header">
+                        <span class="loc-type">Reception</span>
+                        <h3 class="loc-title">The Modern<br>NYC</h3>
+                    </div>
+
+                    <div class="loc-meta-row">
+                        <div class="loc-text-col">
+                            <p class="loc-address">
+                                9 W 53rd St, New York, NY 10019<br>
+                                <span style="color: #999; font-size: 0.85em;">Valet Parking Available</span>
+                            </p>
+                            <a href="https://goo.gl/maps/TheModernNYC" target="_blank" class="link-arrow">
+                                Navigate Here &rarr;
+                            </a>
+                        </div>
+                        <div style="text-align: center;">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=The+Modern+NYC" class="qr-minimal" alt="Scan for Restaurant">
+                            <span class="qr-label">Scan</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </section>
 
         <section class="section-footer"></section>
@@ -704,7 +917,7 @@
 
         gsap.registerPlugin(ScrollTrigger);
         
-        // --- LOADER ANIMATION (UPDATED: Top-to-Bottom Fall) ---
+        // --- LOADER ANIMATION ---
         function initLoader() {
             const loaderTl = gsap.timeline({
                 onComplete: () => {
@@ -747,8 +960,7 @@
                 ease: "power2.in" 
             }, "exit");
 
-            // D. REVEAL CONTENT - FIXED TIMING
-            // Use ">" to wait for the previous staggered sequence to finish
+            // D. REVEAL CONTENT
             loaderTl.to(".loader-overlay", {
                 yPercent: -100,
                 duration: 1.2,
