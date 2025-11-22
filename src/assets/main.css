@@ -1,0 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .bg-noise {
+    background-image: url('https://grainy-gradients.vercel.app/noise.svg');
+  }
+
+  .text-shadow-sm {
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+}
+
+/* Global Scrollbar Hide */
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+/* Petal Animation Class (Dynamic) */
+.petal {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  border-radius: 50% 0 50% 0;
+  will-change: transform, opacity;
+}

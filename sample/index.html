@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A & J | The Wedding Countdown</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+    <!-- GSAP & Lenis -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        accent: '#E5CFCF', // Muted Blush
+                        black: '#0a0a0a',
+                        offwhite: '#f4f4f4',
+                        loader: '#EBE6E6'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    transitionTimingFunction: {
+                        'out-expo': 'cubic-bezier(0.25, 1, 0.5, 1)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Utility for Noise Overlay */
+        .bg-noise {
+            background-image: url('https://grainy-gradients.vercel.app/noise.svg');
+        }
+        
+        /* Petal Animation Class */
+        .petal {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            border-radius: 50% 0 50% 0; 
+            will-change: transform, opacity;
+        }
+
+        /* Hide scrollbar */
+        ::-webkit-scrollbar { width: 0px; background: transparent; }
+    </style>
+</head>
+<body class="bg-black text-white font-sans antialiased overflow-x-hidden selection:bg-accent selection:text-black">
+
+    <!-- Noise Overlay -->
+    <div class="fixed inset-0 pointer-events-none z-[9999] opacity-[0.07] bg-noise w-full h-full"></div>
+
+    <!-- LOADING OVERLAY -->
+    <div class="loader-overlay fixed inset-0 w-full h-screen bg-loader z-[9999] flex justify-center items-center visible">
+        <div class="loader-stack relative w-[220px] h-[280px] md:w-[280px] md:h-[350px] [perspective:1200px]">
+            <img src="https://images.unsplash.com/photo-1523438885200-e635ba2c371e?q=80&w=987&auto=format&fit=crop" class="loader-card absolute inset-0 w-full h-full object-cover border-[12px] border-white border-b-[30px] shadow-2xl opacity-0 origin-center will-change-transform" alt="Loader 1">
+            <img src="https://images.unsplash.com/photo-1502635385003-ee1e6a1a742d?q=80&w=987&auto=format&fit=crop" class="loader-card absolute inset-0 w-full h-full object-cover border-[12px] border-white border-b-[30px] shadow-2xl opacity-0 origin-center will-change-transform" alt="Loader 2">
+            <img src="https://plus.unsplash.com/premium_photo-1675851210020-045950ac0215?q=80&w=973&auto=format&fit=crop" class="loader-card absolute inset-0 w-full h-full object-cover border-[12px] border-white border-b-[30px] shadow-2xl opacity-0 origin-center will-change-transform" alt="Loader 3">
+            <img src="https://plus.unsplash.com/premium_photo-1673897888993-a1db844c2ca1?q=80&w=987&auto=format&fit=crop" class="loader-card absolute inset-0 w-full h-full object-cover border-[12px] border-white border-b-[30px] shadow-2xl opacity-0 origin-center will-change-transform" alt="Loader 4">
+            <img src="https://images.unsplash.com/photo-1550784718-990c6de52adf?q=80&w=984&auto=format&fit=crop" class="loader-card absolute inset-0 w-full h-full object-cover border-[12px] border-white border-b-[30px] shadow-2xl opacity-0 origin-center will-change-transform" alt="Loader 5">
+        </div>
+    </div>
+
+    <!-- FIXED BACKGROUND SLIDESHOW -->
+    <div class="bg-layer fixed inset-0 w-full h-screen z-[-1] overflow-hidden pointer-events-none">
+        <img src="https://images.unsplash.com/photo-1532712938310-34cb3982ef74?q=80&w=2370&auto=format&fit=crop" class="slide absolute inset-0 w-full h-full object-cover opacity-0 scale-100 will-change-transform" alt="Wedding 1">
+        <img src="https://images.unsplash.com/photo-1606800052052-a08af7148866?q=80&w=2370&auto=format&fit=crop" class="slide absolute inset-0 w-full h-full object-cover opacity-0 scale-100 will-change-transform" alt="Wedding 2">
+        <img src="https://images.unsplash.com/photo-1591700331354-f7eea65d1ce8?q=80&w=2370&auto=format&fit=crop" class="slide absolute inset-0 w-full h-full object-cover opacity-0 scale-100 will-change-transform" alt="Wedding 3">
+    </div>
+
+    <main class="relative z-10">
+        
+        <!-- HERO SECTION -->
+        <section class="section-hero h-screen flex flex-col justify-between p-8 relative z-10 w-full">
+            <div class="hero-header flex justify-between items-start mix-blend-difference text-white/90">
+                <div class="text-sm uppercase tracking-widest opacity-80">EST. 2025</div>
+                <div class="text-sm uppercase tracking-widest opacity-80">NYC</div>
+            </div>
+            <div class="hero-center text-center">
+                <h1 class="display-text font-serif font-normal leading-none tracking-tight origin-center text-[3.5rem] md:text-[clamp(3rem,8vw,9rem)]">
+                    Anna &<br>James
+                </h1>
+            </div>
+            <div class="hero-footer flex justify-between items-end text-white/80">
+                <div class="text-sm uppercase tracking-widest opacity-80">Scroll to Begin</div>
+                <div class="text-sm uppercase tracking-widest opacity-80">09.21.25</div>
+            </div>
+        </section>
+
+        <!-- INTRO SECTION (BLUSH) -->
+        <section class="section-intro bg-accent text-black min-h-screen md:min-h-[150vh] flex flex-col md:justify-center md:items-center relative z-20 overflow-hidden shadow-[0_-50px_100px_rgba(0,0,0,0.3)] py-24 px-6 md:p-0">
+            
+            <div class="intro-content-layer relative z-20 text-center flex flex-col items-center gap-8 max-w-3xl md:p-8 mb-12 md:mb-0 mx-auto">
+                <h2 class="editorial-text split-reveal font-serif italic text-[3rem] md:text-[clamp(1.5rem,4vw,4rem)] leading-tight md:leading-none">
+                    "We loved with a love that was more than love."
+                </h2>
+                <p class="fade-reveal mt-4 md:mt-8 leading-relaxed max-w-md text-center text-sm md:text-base">
+                    Join us for a weekend of celebration, art, and romance in the heart of the city. We cannot wait to share this chapter with our favorite people.
+                </p>
+            </div>
+
+            <div class="intro-gallery relative w-full h-auto grid grid-cols-2 gap-4 mt-8 md:mt-0 md:absolute md:top-0 md:left-0 md:h-full md:block md:pointer-events-none z-10 md:z-[1]">
+                <img src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=2070&auto=format&fit=crop" class="intro-img-scatter i-img-1 w-full h-[250px] object-cover rounded-lg md:rounded md:absolute md:top-[15%] md:left-[8%] md:w-[18vw] md:h-[24vw] opacity-100 md:opacity-90 z-20" alt="Couple 1">
+                <img src="https://images.unsplash.com/photo-1621621667797-e06afc217fb0?q=80&w=1000&auto=format&fit=crop" class="intro-img-scatter i-img-2 w-full h-[250px] object-cover rounded-lg md:rounded mt-8 md:mt-0 md:absolute md:bottom-[20%] md:left-[5%] md:w-[15vw] md:h-[15vw] opacity-100 md:opacity-90 z-10" alt="Hands">
+                <img src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2070&auto=format&fit=crop" class="intro-img-scatter i-img-3 w-full h-[300px] col-span-2 object-cover rounded-lg md:rounded md:col-span-1 md:h-[250px] md:absolute md:top-[10%] md:right-[5%] md:w-[22vw] md:h-[16vw] opacity-100 md:opacity-90 z-10" alt="Atmosphere">
+                <img src="https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?q=80&w=1000&auto=format&fit=crop" class="intro-img-scatter i-img-4 w-full h-[250px] object-cover rounded-lg md:rounded md:absolute md:bottom-[15%] md:right-[10%] md:w-[16vw] md:h-[22vw] opacity-100 md:opacity-90 z-20" alt="Flowers">
+            </div>
+        </section>
+
+        <!-- VENUE SECTION (BLACK) - FIXED MOBILE UX & ANIMATION -->
+        <section class="section-venue bg-black text-accent min-h-screen md:min-h-[150vh] flex flex-col md:justify-center md:items-center relative z-20 overflow-hidden py-24 px-6 md:p-0">
+            
+            <!-- Text (Stacked first on mobile) -->
+            <div class="venue-content-layer relative z-20 text-center flex flex-col items-center gap-8 max-w-3xl md:p-8 mb-16 md:mb-0 mx-auto">
+                <div class="meta-text fade-reveal text-accent text-sm uppercase tracking-widest opacity-80">The Location</div>
+                <h2 class="display-text split-reveal font-serif font-normal leading-none tracking-tight text-[3.5rem] md:text-[clamp(3rem,8vw,9rem)] text-white">The Public<br>Library</h2>
+                
+                <div class="venue-details mt-4 md:mt-8 flex flex-col md:flex-row gap-8 md:gap-16 text-white w-full justify-center">
+                    <div class="detail-block fade-reveal flex flex-col gap-2">
+                        <span class="meta-text text-[#999] text-xs uppercase tracking-widest">Ceremony</span>
+                        <span class="font-serif text-2xl">4:30 PM</span>
+                    </div>
+                    <div class="detail-block fade-reveal flex flex-col gap-2">
+                        <span class="meta-text text-[#999] text-xs uppercase tracking-widest">Cocktails</span>
+                        <span class="font-serif text-2xl">6:00 PM</span>
+                    </div>
+                    <div class="detail-block fade-reveal flex flex-col gap-2">
+                        <span class="meta-text text-[#999] text-xs uppercase tracking-widest">Reception</span>
+                        <span class="font-serif text-2xl">7:30 PM</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Venue Gallery (Float Grid Fixed) -->
+            <!-- Mobile: Relative offset grid | Desktop: Absolute scattered -->
+            <div class="venue-gallery relative w-full h-auto grid grid-cols-2 gap-4 md:gap-0 md:absolute md:top-0 md:left-0 md:w-full md:h-full md:block md:pointer-events-none z-10 md:z-[1]">
+                
+                <!-- Mobile Col 1 / Desktop Pos 1 -->
+                <div class="flex flex-col gap-4">
+                    <img src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=2070&auto=format&fit=crop" 
+                         class="venue-img v-img-1 w-full h-[240px] object-cover rounded-lg grayscale md:grayscale-0 md:rounded md:absolute md:top-[10%] md:left-[5%] md:w-[20vw] md:h-[25vw] transition-all duration-500 hover:grayscale-0 z-20" 
+                         alt="Couple 1">
+                    
+                    <!-- Image 3 sits in col 1 on mobile -->
+                    <img src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2070&auto=format&fit=crop" 
+                         class="venue-img v-img-3 w-full h-[300px] object-cover rounded-lg grayscale md:grayscale-0 md:rounded md:absolute md:bottom-[10%] md:left-[12%] md:w-[15vw] md:h-[15vw] transition-all duration-500 hover:grayscale-0 z-20" 
+                         alt="Atmosphere">
+                </div>
+
+                <!-- Mobile Col 2 (Offset for Float Effect) / Desktop Pos 2 -->
+                <div class="flex flex-col gap-4 mt-12"> <!-- mt-12 creates the float/stagger effect -->
+                    <img src="https://images.unsplash.com/photo-1621621667797-e06afc217fb0?q=80&w=1000&auto=format&fit=crop" 
+                         class="venue-img v-img-2 w-full h-[200px] object-cover rounded-lg grayscale md:grayscale-0 md:rounded md:absolute md:top-[15%] md:right-[8%] md:w-[18vw] md:h-[12vw] transition-all duration-500 hover:grayscale-0 z-10" 
+                         alt="Hands">
+                    
+                    <img src="https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?q=80&w=1000&auto=format&fit=crop" 
+                         class="venue-img v-img-4 w-full h-[280px] object-cover rounded-lg grayscale md:grayscale-0 md:rounded md:absolute md:bottom-[20%] md:right-[5%] md:w-[22vw] md:h-[28vw] transition-all duration-500 hover:grayscale-0 z-10" 
+                         alt="Flowers">
+                </div>
+
+                <!-- Image 5 (Full Width Bottom on Mobile) -->
+                <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=1000&auto=format&fit=crop" 
+                     class="venue-img v-img-5 col-span-2 w-full h-[150px] object-cover rounded-lg grayscale md:grayscale-0 opacity-60 md:opacity-60 md:rounded md:absolute md:top-[50%] md:left-[-5%] md:w-[12vw] md:h-[18vw] transition-all duration-500 hover:grayscale-0 z-0" 
+                     alt="Detail 5">
+            </div>
+        </section>
+
+        <!-- RSVP SECTION (BLUSH) -->
+        <section class="section-rsvp bg-accent text-black min-h-screen py-24 px-8 flex flex-col items-center justify-start relative z-20 md:pb-16 pb-32">
+            <h2 class="editorial-text split-reveal text-center font-serif italic text-[clamp(1.5rem,4vw,4rem)]">Be Part of Our Story</h2>
+            
+            <div class="countdown-wrap fade-reveal mt-12 flex gap-4 md:gap-8">
+                <div class="count-unit flex flex-col items-center">
+                    <div class="reel-window h-[2.5rem] md:h-[3.5rem] overflow-hidden relative block [mask-image:linear-gradient(to_bottom,transparent_0%,black_25%,black_75%,transparent_100%)]">
+                        <div class="reel-strip flex flex-col will-change-transform" id="days-reel">
+                            <div class="num-item h-[2.5rem] md:h-[3.5rem] flex items-center justify-center font-serif text-[2rem] md:text-[3rem] leading-[2.5rem] md:leading-[3.5rem] tabular-nums">00</div>
+                        </div>
+                    </div>
+                    <span class="count-label text-[0.6rem] md:text-[0.75rem] uppercase tracking-[0.2em] mt-2">Days</span>
+                </div>
+                <div class="count-unit flex flex-col items-center">
+                    <div class="reel-window h-[2.5rem] md:h-[3.5rem] overflow-hidden relative block [mask-image:linear-gradient(to_bottom,transparent_0%,black_25%,black_75%,transparent_100%)]">
+                        <div class="reel-strip flex flex-col will-change-transform" id="hours-reel">
+                            <div class="num-item h-[2.5rem] md:h-[3.5rem] flex items-center justify-center font-serif text-[2rem] md:text-[3rem] leading-[2.5rem] md:leading-[3.5rem] tabular-nums">00</div>
+                        </div>
+                    </div>
+                    <span class="count-label text-[0.6rem] md:text-[0.75rem] uppercase tracking-[0.2em] mt-2">Hrs</span>
+                </div>
+                <div class="count-unit flex flex-col items-center">
+                    <div class="reel-window h-[2.5rem] md:h-[3.5rem] overflow-hidden relative block [mask-image:linear-gradient(to_bottom,transparent_0%,black_25%,black_75%,transparent_100%)]">
+                        <div class="reel-strip flex flex-col will-change-transform" id="mins-reel">
+                            <div class="num-item h-[2.5rem] md:h-[3.5rem] flex items-center justify-center font-serif text-[2rem] md:text-[3rem] leading-[2.5rem] md:leading-[3.5rem] tabular-nums">00</div>
+                        </div>
+                    </div>
+                    <span class="count-label text-[0.6rem] md:text-[0.75rem] uppercase tracking-[0.2em] mt-2">Mins</span>
+                </div>
+                <div class="count-unit flex flex-col items-center">
+                    <div class="reel-window h-[2.5rem] md:h-[3.5rem] overflow-hidden relative block [mask-image:linear-gradient(to_bottom,transparent_0%,black_25%,black_75%,transparent_100%)]">
+                        <div class="reel-strip flex flex-col will-change-transform" id="secs-reel">
+                            <div class="num-item h-[2.5rem] md:h-[3.5rem] flex items-center justify-center font-serif text-[2rem] md:text-[3rem] leading-[2.5rem] md:leading-[3.5rem] tabular-nums">00</div>
+                        </div>
+                    </div>
+                    <span class="count-label text-[0.6rem] md:text-[0.75rem] uppercase tracking-[0.2em] mt-2">Secs</span>
+                </div>
+            </div>
+
+            <!-- CINEMATIC GUEST FORM -->
+            <form class="rsvp-form fade-reveal w-full max-w-3xl mt-16 md:mt-24 flex flex-col gap-12" onsubmit="event.preventDefault(); celebrateRSVP(this.querySelector('.btn-submit'));">
+                
+                <!-- Name & Email Row -->
+                <div class="form-row grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16">
+                    <div class="form-group group relative">
+                        <label class="absolute -top-3 left-0 font-sans text-[0.65rem] uppercase tracking-[0.2em] opacity-50 transition-all group-focus-within:opacity-100 group-focus-within:text-black">Name</label>
+                        <input type="text" class="w-full bg-transparent border-b border-black/20 py-2 font-serif text-2xl md:text-3xl text-black outline-none transition-all duration-500 focus:border-black placeholder-transparent" placeholder="Your Name" required>
+                    </div>
+                    <div class="form-group group relative">
+                        <label class="absolute -top-3 left-0 font-sans text-[0.65rem] uppercase tracking-[0.2em] opacity-50 transition-all group-focus-within:opacity-100 group-focus-within:text-black">Contact</label>
+                        <input type="email" class="w-full bg-transparent border-b border-black/20 py-2 font-serif text-2xl md:text-3xl text-black outline-none transition-all duration-500 focus:border-black placeholder-transparent" placeholder="Email Address" required>
+                    </div>
+                </div>
+
+                <!-- Relationship Select -->
+                <div class="form-group group relative">
+                    <label class="absolute -top-3 left-0 font-sans text-[0.65rem] uppercase tracking-[0.2em] opacity-50">Relationship</label>
+                    <div class="relative">
+                        <select class="w-full bg-transparent border-b border-black/20 py-2 font-serif text-2xl md:text-3xl text-black outline-none appearance-none cursor-pointer transition-all duration-500 focus:border-black" required>
+                            <option value="" disabled selected class="text-gray-400">Select...</option>
+                            <option value="family">Family of the Couple</option>
+                            <option value="friend">Friend of the Couple</option>
+                            <option value="colleague">Colleague / Other</option>
+                        </select>
+                        <!-- Custom Minimal Arrow -->
+                        <div class="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none opacity-50">
+                            <svg width="12" height="8" viewBox="0 0 12 8" fill="none" stroke="currentColor" stroke-width="1"><path d="M1 1L6 6L11 1"/></svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Attendance Radios (Editorial Style) -->
+                <div class="form-group flex flex-col gap-6">
+                    <label class="font-sans text-[0.65rem] uppercase tracking-[0.2em] opacity-50">Attendance</label>
+                    <div class="flex flex-col md:flex-row gap-6 md:gap-12">
+                        <label class="cursor-pointer group flex items-center gap-4">
+                            <input type="radio" name="attendance" value="yes" checked class="peer sr-only">
+                            <span class="w-4 h-4 border border-black rounded-full flex items-center justify-center transition-all peer-checked:bg-black">
+                                <span class="w-1.5 h-1.5 bg-accent rounded-full opacity-0 peer-checked:opacity-100 transition-opacity"></span>
+                            </span>
+                            <span class="font-serif text-2xl md:text-3xl text-black/40 peer-checked:text-black peer-checked:italic transition-colors duration-300">Joyfully Accept</span>
+                        </label>
+                        
+                        <label class="cursor-pointer group flex items-center gap-4">
+                            <input type="radio" name="attendance" value="no" class="peer sr-only">
+                            <span class="w-4 h-4 border border-black rounded-full flex items-center justify-center transition-all peer-checked:bg-black">
+                                <span class="w-1.5 h-1.5 bg-accent rounded-full opacity-0 peer-checked:opacity-100 transition-opacity"></span>
+                            </span>
+                            <span class="font-serif text-2xl md:text-3xl text-black/40 peer-checked:text-black peer-checked:italic transition-colors duration-300">Regretfully Decline</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Message Input -->
+                <div class="form-group group relative mt-4">
+                    <label class="absolute -top-3 left-0 font-sans text-[0.65rem] uppercase tracking-[0.2em] opacity-50 transition-all group-focus-within:opacity-100 group-focus-within:text-black">Notes</label>
+                    <input type="text" class="w-full bg-transparent border-b border-black/20 py-2 font-serif text-xl md:text-2xl text-black outline-none transition-all duration-500 focus:border-black placeholder-black/30 italic" placeholder="Dietary restrictions or a message for us...">
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn-submit group relative self-center mt-12 overflow-hidden px-16 py-5 border border-black bg-transparent text-black font-sans text-xs uppercase tracking-[0.25em] transition-all duration-500 hover:text-accent cursor-pointer">
+                    <span class="relative z-10">Confirm RSVP</span>
+                    <div class="absolute inset-0 bg-black transform scale-x-0 origin-left transition-transform duration-500 ease-out-expo group-hover:scale-x-100"></div>
+                </button>
+            </form>
+        </section>
+
+        <!-- MAP / JOURNEY SECTION -->
+        <section class="section-map bg-white text-black py-24 px-6 md:py-40 md:px-8 min-h-screen flex flex-col items-center relative z-50 mb-[20vh] [clip-path:none] md:[clip-path:polygon(0_0,100%_0,100%_85%,0_100%)]">
+            <div class="meta-text fade-reveal text-sm uppercase tracking-[0.1em] opacity-80">Getting There</div>
+            <h2 class="editorial-text split-reveal mt-4 text-center font-serif font-normal text-[clamp(3rem,8vw,9rem)] text-black leading-none">
+                The Journey
+            </h2>
+
+            <div class="locations-grid grid grid-cols-1 md:grid-cols-2 gap-20 md:gap-24 mt-16 md:mt-24 w-full max-w-[1400px]">
+                <!-- Location 1 -->
+                <div class="location-block fade-reveal flex flex-col gap-8">
+                    <div class="map-frame w-full aspect-video md:aspect-[4/3] relative overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.08)] group">
+                        <iframe class="map-iframe w-full h-full border-0 grayscale contrast-[1.1] brightness-105 transition-all duration-500 ease-out group-hover:grayscale-0 group-hover:contrast-100 group-hover:brightness-100 group-hover:scale-105" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.0299957356464!2d-73.97639338459356!3d40.75846537932676!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c258f97bdb102b%3A0xea6f5927a61a3d42!2sSt.%20Patrick's%20Cathedral!5e0!3m2!1sen!2sus!4v1698999999999!5m2!1sen!2sus" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    </div>
+                    <div class="loc-header flex flex-col gap-2 border-l-2 border-accent pl-6">
+                        <span class="loc-type font-sans text-xs uppercase tracking-[0.15em] text-[#888]">Ceremony</span>
+                        <h3 class="loc-title font-serif text-[2.2rem] leading-[1.1]">St. Patrick's<br>Cathedral</h3>
+                    </div>
+                    <div class="loc-meta-row flex justify-between items-start mt-2">
+                        <div class="loc-text-col max-w-[60%]">
+                            <p class="loc-address font-sans opacity-70 leading-relaxed text-[0.95rem]">
+                                5th Ave, New York, NY 10022<br>
+                                <span class="text-[#999] text-[0.85em]">Enter via Main Doors</span>
+                            </p>
+                            <a href="https://goo.gl/maps/StPatricksCathedral" target="_blank" class="link-arrow inline-flex items-center gap-2 no-underline text-black font-sans text-[0.8rem] uppercase tracking-[0.1em] mt-6 relative pb-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1px] after:bg-current after:scale-x-0 after:origin-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-left">
+                                Navigate Here &rarr;
+                            </a>
+                        </div>
+                        <div class="text-center hidden md:block">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=St+Patricks+Cathedral+NYC" class="qr-minimal w-20 h-20 border border-[#eee] p-[5px] transition-transform duration-300 hover:scale-110 hover:border-accent" alt="Scan for Church">
+                            <span class="qr-label block mt-2 text-[0.6rem] text-[#999] uppercase tracking-[0.05em] text-center">Scan</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Location 2 -->
+                <div class="location-block fade-reveal flex flex-col gap-8">
+                    <div class="map-frame w-full aspect-video md:aspect-[4/3] relative overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.08)] group">
+                        <iframe class="map-iframe w-full h-full border-0 grayscale contrast-[1.1] brightness-105 transition-all duration-500 ease-out group-hover:grayscale-0 group-hover:contrast-100 group-hover:brightness-100 group-hover:scale-105" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.0647572686076!2d-73.9776766845936!3d40.75924347932682!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c258f9cfcb0c05%3A0x7d4d167969323c94!2sThe%20Modern!5e0!3m2!1sen!2sus!4v1698999999999!5m2!1sen!2sus" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    </div>
+                    <div class="loc-header flex flex-col gap-2 border-l-2 border-accent pl-6">
+                        <span class="loc-type font-sans text-xs uppercase tracking-[0.15em] text-[#888]">Reception</span>
+                        <h3 class="loc-title font-serif text-[2.2rem] leading-[1.1]">The Modern<br>NYC</h3>
+                    </div>
+                    <div class="loc-meta-row flex justify-between items-start mt-2">
+                        <div class="loc-text-col max-w-[60%]">
+                            <p class="loc-address font-sans opacity-70 leading-relaxed text-[0.95rem]">
+                                9 W 53rd St, New York, NY 10019<br>
+                                <span class="text-[#999] text-[0.85em]">Valet Parking Available</span>
+                            </p>
+                            <a href="https://goo.gl/maps/TheModernNYC" target="_blank" class="link-arrow inline-flex items-center gap-2 no-underline text-black font-sans text-[0.8rem] uppercase tracking-[0.1em] mt-6 relative pb-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1px] after:bg-current after:scale-x-0 after:origin-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-left">
+                                Navigate Here &rarr;
+                            </a>
+                        </div>
+                        <div class="text-center hidden md:block">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=The+Modern+NYC" class="qr-minimal w-20 h-20 border border-[#eee] p-[5px] transition-transform duration-300 hover:scale-110 hover:border-accent" alt="Scan for Restaurant">
+                            <span class="qr-label block mt-2 text-[0.6rem] text-[#999] uppercase tracking-[0.05em] text-center">Scan</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-footer h-[40vh] flex items-center justify-center pointer-events-none relative z-10"></section>
+
+    </main>
+
+    <script>
+        // 1. SETUP LENIS
+        const lenis = new Lenis({ duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smooth: true, direction: 'vertical' });
+        lenis.stop();
+        function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+        requestAnimationFrame(raf);
+
+        gsap.registerPlugin(ScrollTrigger);
+        
+        // 2. LOADER
+        function initLoader() {
+            const loaderTl = gsap.timeline({ onComplete: () => { lenis.start(); } });
+            loaderTl.clear();
+            loaderTl.fromTo(".loader-card", { scale: 0, opacity: 0, rotation: () => Math.random() * 30 - 15 }, { scale: 1, opacity: 1, rotation: () => Math.random() * 20 - 10, duration: 1.0, stagger: 0.5, ease: "back.out(1.4)" });
+            loaderTl.to({}, { duration: 0.5 });
+            loaderTl.to(".loader-card", { y: window.innerHeight + 400, rotation: () => Math.random() * 60 - 30, opacity: 0, duration: 1.0, stagger: { each: 0.45, from: "end" }, ease: "power2.in" }, "exit");
+            loaderTl.to(".loader-overlay", { yPercent: -100, duration: 1.2, ease: "power2.inOut" }, ">"); 
+        }
+        window.addEventListener("load", initLoader);
+
+        // 3. SLIDESHOW
+        const slides = document.querySelectorAll('.slide');
+        const slideDuration = 6; const fadeDuration = 1.5; 
+        const slideTimeline = gsap.timeline({ repeat: -1 });
+        slides.forEach((slide, index) => {
+            const nextSlide = slides[index + 1] || slides[0];
+            gsap.set(slide, { opacity: index === 0 ? 1 : 0, scale: 1 });
+            const tl = gsap.timeline({ defaults: { ease: "none" } });
+            tl.to(slide, { scale: 1.15, duration: slideDuration + fadeDuration, ease: "power1.out" }, 0);
+            if(index < slides.length) {
+                slideTimeline.add(tl, index * (slideDuration - fadeDuration));
+                slideTimeline.to(slide, { opacity: 0, duration: fadeDuration }, `> -${fadeDuration}`);
+                slideTimeline.to(nextSlide, { opacity: 1, duration: fadeDuration }, `<`);
+            }
+        });
+
+        // 4. SCROLL TRIGGERS
+        gsap.to(".hero-center", { scale: 0.8, opacity: 0, scrollTrigger: { trigger: ".section-hero", start: "top top", end: "80% top", scrub: true } });
+        
+        const revealElements = document.querySelectorAll(".split-reveal, .fade-reveal");
+        revealElements.forEach(el => { gsap.from(el, { y: 50, opacity: 0, duration: 1, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 85%" } }); });
+
+        // --- RESPONSIVE IMAGE ANIMATIONS (FIXED) ---
+        if (window.innerWidth > 768) {
+            // Desktop Parallax
+            const createParallax = (selector, trigger) => {
+                const images = document.querySelectorAll(selector);
+                images.forEach((img, i) => {
+                    const direction = i % 2 === 0 ? -1 : 1; 
+                    gsap.fromTo(img, { yPercent: 40 * direction }, { yPercent: -20 * direction, ease: "none", scrollTrigger: { trigger: trigger, start: "top bottom", end: "bottom top", scrub: 1 } });
+                });
+            };
+            createParallax(".intro-img-scatter", ".section-intro");
+            createParallax(".venue-img", ".section-venue");
+        } else {
+            // Mobile Animations - SEPARATED TRIGGERS
+            gsap.from(".intro-img-scatter", { y: 50, opacity: 0, duration: 0.8, stagger: 0.1, scrollTrigger: { trigger: ".section-intro", start: "top 70%" } });
+            gsap.from(".venue-img", { y: 50, opacity: 0, duration: 0.8, stagger: 0.1, scrollTrigger: { trigger: ".section-venue", start: "top 70%" } });
+        }
+
+        // 5. COUNTDOWN
+        const weddingDate = new Date('September 21, 2025 00:00:00').getTime();
+        function getTimeRemaining() {
+            const now = new Date().getTime(); const gap = weddingDate - now;
+            if (gap < 0) return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+            const second = 1000, minute = second * 60, hour = minute * 60, day = hour * 24;
+            return { days: Math.floor(gap / day), hours: Math.floor((gap % day) / hour), minutes: Math.floor((gap % hour) / minute), seconds: Math.floor((gap % minute) / second) };
+        }
+        function buildReelStrip(targetVal, limit = 30) {
+            let html = '';
+            if (targetVal > limit) {
+                for (let i = targetVal; i > targetVal - 10; i--) html += `<div class="num-item h-[2.5rem] md:h-[3.5rem] flex items-center justify-center font-serif text-[2rem] md:text-[3rem] leading-[2.5rem] md:leading-[3.5rem] tabular-nums">${i.toString().padStart(2, '0')}</div>`;
+                html += `<div class="num-item h-[2.5rem] md:h-[3.5rem] flex items-center justify-center font-serif text-[2rem] md:text-[3rem] leading-[2.5rem] md:leading-[3.5rem] tabular-nums">...</div>`;
+                for (let i = 10; i >= 0; i--) html += `<div class="num-item h-[2.5rem] md:h-[3.5rem] flex items-center justify-center font-serif text-[2rem] md:text-[3rem] leading-[2.5rem] md:leading-[3.5rem] tabular-nums">${i.toString().padStart(2, '0')}</div>`;
+            } else {
+                for (let i = targetVal; i >= 0; i--) html += `<div class="num-item h-[2.5rem] md:h-[3.5rem] flex items-center justify-center font-serif text-[2rem] md:text-[3rem] leading-[2.5rem] md:leading-[3.5rem] tabular-nums">${i.toString().padStart(2, '0')}</div>`;
+            }
+            return html;
+        }
+        function animateReel(elementId, targetVal) {
+            const strip = document.getElementById(elementId); strip.innerHTML = buildReelStrip(targetVal);
+            const itemHeight = strip.lastElementChild.offsetHeight; const totalItems = strip.children.length; const totalHeight = totalItems * itemHeight;
+            gsap.set(strip, { y: -(totalHeight - itemHeight) }); gsap.to(strip, { y: 0, duration: 3.5, ease: "power4.out" });
+        }
+        function updateReel(elementId, newVal) {
+            const strip = document.getElementById(elementId); const currentVal = strip.firstElementChild.innerText; 
+            if (currentVal !== newVal.toString().padStart(2, '0')) {
+                const newDiv = document.createElement('div');
+                newDiv.className = 'num-item h-[2.5rem] md:h-[3.5rem] flex items-center justify-center font-serif text-[2rem] md:text-[3rem] leading-[2.5rem] md:leading-[3.5rem] tabular-nums';
+                newDiv.innerText = newVal.toString().padStart(2, '0'); strip.prepend(newDiv);
+                const itemHeight = newDiv.offsetHeight; gsap.set(strip, { y: -itemHeight });
+                gsap.to(strip, { y: 0, duration: 0.6, ease: "back.out(1.2)" }); if (strip.children.length > 5) strip.lastElementChild.remove();
+            }
+        }
+        ScrollTrigger.create({
+            trigger: ".countdown-wrap", start: "top 85%", once: true,
+            onEnter: () => {
+                const t = getTimeRemaining();
+                animateReel('days-reel', t.days); animateReel('hours-reel', t.hours); animateReel('mins-reel', t.minutes); animateReel('secs-reel', t.seconds);
+                setTimeout(() => { setInterval(() => { const now = getTimeRemaining(); updateReel('days-reel', now.days); updateReel('hours-reel', now.hours); updateReel('mins-reel', now.minutes); updateReel('secs-reel', now.seconds); }, 1000); }, 3500); 
+            }
+        });
+
+        // 6. RSVP FLOWER CELEBRATION
+        function celebrateRSVP(btn) {
+            if (!btn) return;
+            alert('RSVP Sent! We can\'t wait to see you.');
+            const rect = btn.getBoundingClientRect(); const startX = rect.left + rect.width / 2; const startY = rect.top;
+            let container = document.getElementById('petal-container');
+            if (!container) { container = document.createElement('div'); container.id = 'petal-container'; container.className = 'fixed top-0 left-0 w-full h-full pointer-events-none z-[9999]'; document.body.appendChild(container); }
+            const petalCount = 30; const colors = ['#FFFFFF', '#E5CFCF', '#F4F4F4'];
+            for (let i = 0; i < petalCount; i++) {
+                const petal = document.createElement('div'); petal.classList.add('petal');
+                const size = Math.random() * 10 + 8; petal.style.width = `${size}px`; petal.style.height = `${size}px`; petal.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                gsap.set(petal, { x: startX, y: startY, opacity: 1, scale: 0 });
+                container.appendChild(petal);
+                const endX = (Math.random() - 0.5) * 400; const endY = -(Math.random() * 150 + 100); 
+                const tl = gsap.timeline();
+                tl.to(petal, { x: startX + endX, y: startY + endY, rotation: Math.random() * 360, scale: 1, duration: 0.6 + Math.random() * 0.4, ease: "power1.out" });
+                tl.to(petal, { y: window.innerHeight + 50, x: `+=${(Math.random() - 0.5) * 50}`, rotation: `+=${Math.random() * 180}`, duration: 2 + Math.random(), ease: "power1.in", }, "-=0.2"); 
+                tl.to(petal, { opacity: 0, duration: 0.5 }, "-=0.5"); 
+                tl.call(() => petal.remove());
+            }
+        }
+    </script>
+</body>
+</html>
